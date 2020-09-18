@@ -46,7 +46,7 @@ components:
       properties:
         customerName:
           type: string
-        id:
+        orderId:
           type: string
         lineItems:
           $ref: '#/components/schemas/ListLineItem'
@@ -322,7 +322,8 @@ public class FavFoodResourceTest {
           .post("/FavFood")
           .then()
              .statusCode(202)
-             .body(is(order.toString()));
+             .body("orderId", equalTo(order.getString("orderId")))
+             .body("customerName", equalTo("Lemmy"));
     }
 
     JsonObject mockOrder(){
@@ -341,7 +342,7 @@ public class FavFoodResourceTest {
 	private JsonObject mockLineItem() {
         return Json.createObjectBuilder()
         .add("item", "BLACK_COFFEE")
-        .add("id", UUID.randomUUID().toString())
+        .add("orderId", UUID.randomUUID().toString())
         .add("quantity", 1).build();    
 	}
 
@@ -365,7 +366,8 @@ The Rest-Assured part of our test is:
           .post("/FavFood")
           .then()
              .statusCode(202)
-             .body(is(order.toString()));
+             .body("orderId", equalTo(order.getString("orderId")))
+             .body("customerName", equalTo("Lemmy"));
     }
 ```
 
@@ -421,3 +423,303 @@ public class FavFoodResource {
 ```
 
 Our class won't compile of course because FavFoodOrder doesn't exist.
+
+### Create the FavFood domain model
+
+#### FavFoodOrder
+
+Create a "domain" package in "src/test," and create a class, "FavFoodOrder," in the "domain package":
+
+```java
+package org.j4k.workshops.quarkus.domain;
+
+import java.util.List;
+
+public class FavFoodOrder {
+
+    String orderId;
+
+    String customerName;
+
+    List<LineItem> lineItems;
+
+    public FavFoodOrder(){
+
+    }
+
+}
+```
+
+Use your IDE to generate equals(), hashCode(), toString(), and getters and setters.  In Visual Studio Code you can right-click on the class, choose "Source Action," and you will get a menu with the options.
+
+The whole class is below for reference:
+
+```java
+package org.j4k.workshops.quarkus.domain;
+
+import java.util.List;
+
+public class FavFoodOrder {
+
+    String orderId;
+
+    String customerName;
+
+    List<LineItem> lineItems;
+
+    public FavFoodOrder(){
+
+    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((customerName == null) ? 0 : customerName.hashCode());
+		result = prime * result + ((lineItems == null) ? 0 : lineItems.hashCode());
+		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FavFoodOrder other = (FavFoodOrder) obj;
+		if (customerName == null) {
+			if (other.customerName != null)
+				return false;
+		} else if (!customerName.equals(other.customerName))
+			return false;
+		if (lineItems == null) {
+			if (other.lineItems != null)
+				return false;
+		} else if (!lineItems.equals(other.lineItems))
+			return false;
+		if (orderId == null) {
+			if (other.orderId != null)
+				return false;
+		} else if (!orderId.equals(other.orderId))
+			return false;
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	
+	@Override
+	public String toString() {
+		return "FavFoodOrder [customerName=" + customerName + ", lineItems=" + lineItems + ", orderId=" + orderId + "]";
+	}
+
+	/**
+	 * @return the orderId
+	 */
+	public String getOrderId() {
+		return orderId;
+	}
+
+	/**
+	 * @param orderId the orderId to set
+	 */
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	/**
+	 * @return the customerName
+	 */
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	/**
+	 * @param customerName the customerName to set
+	 */
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	/**
+	 * @return the lineItems
+	 */
+	public List<LineItem> getLineItems() {
+		return lineItems;
+	}
+
+	/**
+	 * @param lineItems the lineItems to set
+	 */
+	public void setLineItems(List<LineItem> lineItems) {
+		this.lineItems = lineItems;
+	}
+}
+
+```
+
+Your IDE should be complaining at this point because we don't have a "LineItem" class yet.  Let's fix that!
+
+#### LineItem
+
+Just like the FavFoodOrder create a class, "LineItem," in the "domain package":
+
+```java
+
+package org.j4k.workshops.quarkus.domain;
+
+public class LineItem {
+
+    String itemId;
+
+    String item;
+
+    int quantity;
+
+    public LineItem(){
+
+    }
+
+}
+```
+
+Repeat the code generation steps above for getters and settes, hashCode(), equals(), and toString() so that you have a class like:
+
+```java
+package org.j4k.workshops.quarkus.domain;
+
+public class LineItem {
+
+    String itemId;
+
+    String item;
+
+    int quantity;
+
+    public LineItem(){
+
+    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	
+	@Override
+	public String toString() {
+		return "LineItem [item=" + item + ", itemId=" + itemId + ", quantity=" + quantity + "]";
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((item == null) ? 0 : item.hashCode());
+		result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
+		result = prime * result + quantity;
+		return result;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LineItem other = (LineItem) obj;
+		if (item == null) {
+			if (other.item != null)
+				return false;
+		} else if (!item.equals(other.item))
+			return false;
+		if (itemId == null) {
+			if (other.itemId != null)
+				return false;
+		} else if (!itemId.equals(other.itemId))
+			return false;
+		if (quantity != other.quantity)
+			return false;
+		return true;
+	}
+
+	/**
+	 * @return the itemId
+	 */
+	public String getItemId() {
+		return itemId;
+	}
+
+	/**
+	 * @param itemId the itemId to set
+	 */
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
+
+	/**
+	 * @return the item
+	 */
+	public String getItem() {
+		return item;
+	}
+
+	/**
+	 * @param item the item to set
+	 */
+	public void setItem(String item) {
+		this.item = item;
+	}
+
+	/**
+	 * @return the quantity
+	 */
+	public int getQuantity() {
+		return quantity;
+	}
+
+	/**
+	 * @param quantity the quantity to set
+	 */
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+
+
+}
+```
+
+### Re-Run the Test
+
+The test should now pass!
+
+You can commit the changes to github if you like:
+
+```shell script
+git commit -am "completed step 1"
+```
+
+
