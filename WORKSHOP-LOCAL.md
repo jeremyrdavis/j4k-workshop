@@ -428,6 +428,8 @@ Our class won't compile of course because FavFoodOrder doesn't exist.
 
 #### FavFoodOrder
 
+TODO: Move these to "org.j4k.workshops.quarkus.domain.favfood" package
+
 Create a "domain" package in "src/test," and create a class, "FavFoodOrder," in the "domain package":
 
 ```java
@@ -435,6 +437,9 @@ package org.j4k.workshops.quarkus.domain;
 
 import java.util.List;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class FavFoodOrder {
 
     String orderId;
@@ -459,6 +464,9 @@ package org.j4k.workshops.quarkus.domain;
 
 import java.util.List;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class FavFoodOrder {
 
     String orderId;
@@ -580,6 +588,9 @@ Just like the FavFoodOrder create a class, "LineItem," in the "domain package":
 
 package org.j4k.workshops.quarkus.domain;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class LineItem {
 
     String itemId;
@@ -722,4 +733,398 @@ You can commit the changes to github if you like:
 git commit -am "completed step 1"
 ```
 
+## Getting the FavFoodOrder into our System
 
+### Our Domain
+
+Our system expects:
+
+```yaml
+---
+openapi: 3.0.3
+info:
+  title: Quarkus Cafe Order API
+  version: "1.0"
+paths:
+  /order:
+    post:
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderInCommand'
+components:
+  schemas:
+    LineItem:
+      type: object
+      properties:
+        item:
+          $ref: '#/components/schemas/Item'
+        name:
+          type: string
+    ListLineItem:
+      type: array
+      items:
+        $ref: '#/components/schemas/LineItem'
+    Item:
+      enum:
+      - CAKEPOP
+      - CAPPUCCINO
+      - COFFEE_BLACK
+      - COFFEE_WITH_ROOM
+      - CROISSANT
+      - CROISSANT_CHOCOLATE
+      - ESPRESSO
+      - ESPRESSO_DOUBLE
+      - LATTE
+      - MUFFIN
+      type: string
+    OrderInCommand:
+      type: object
+      properties:
+        beverages:
+          $ref: '#/components/schemas/ListLineItem'
+        id:
+          type: string
+        kitchenOrders:
+          $ref: '#/components/schemas/ListLineItem'
+```
+
+*NOTE*: In the real world we would import a jar file with these objects, but for the sake of this workshop we will create the OrderInCommand manually.  Actually we will create two classes: OrderInCommand and LineItem.  This is simple stuff so feel free to copy and paste from below.
+
+#### OrderInCommand
+
+This object is pretty simple.  There are only three things to note:
+
+*NOTE*
+* The @RegisterForReflection annotation is used when compiling to native code with GraalVM.  It is not always necessary, but it is a good idea to include it with domain objects.
+* JSON-B, the library we are using for marshalling to and from JSON, requires a default empty constructor
+* the "addBeverage" and "addKitchenOrder" are convenience methods for adding to the internal List<LineItem> objects
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
+public class OrderInCommand {
+
+    String id;
+
+    List<LineItem> beverages;
+
+    List<LineItem> kitchenOrders;
+
+	/**
+	 * 
+	 */
+	public OrderInCommand() {
+	}
+
+    public void addBeverage(LineItem lineItem){
+        if(this.beverages == null) this.beverages = new ArrayList<LineItem>();
+        this.beverages.add(lineItem);
+    }
+
+    public void addKitchenOrder(LineItem lineItem){
+        if(this.kitchenOrders == null) this.kitchenOrders = new ArrayList<LineItem>();
+        this.kitchenOrders.add(lineItem);
+    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((beverages == null) ? 0 : beverages.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((kitchenOrders == null) ? 0 : kitchenOrders.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OrderInCommand other = (OrderInCommand) obj;
+		if (beverages == null) {
+			if (other.beverages != null)
+				return false;
+		} else if (!beverages.equals(other.beverages))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (kitchenOrders == null) {
+			if (other.kitchenOrders != null)
+				return false;
+		} else if (!kitchenOrders.equals(other.kitchenOrders))
+			return false;
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	
+	@Override
+	public String toString() {
+		return "OrderInCommand [beverages=" + beverages + ", id=" + id + ", kitchenOrders=" + kitchenOrders + "]";
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the beverages
+	 */
+	public List<LineItem> getBeverages() {
+		return beverages;
+	}
+
+	/**
+	 * @param beverages the beverages to set
+	 */
+	public void setBeverages(List<LineItem> beverages) {
+		this.beverages = beverages;
+	}
+
+	/**
+	 * @return the kitchenOrders
+	 */
+	public List<LineItem> getKitchenOrders() {
+		return kitchenOrders;
+	}
+
+	/**
+	 * @param kitchenOrders the kitchenOrders to set
+	 */
+	public void setKitchenOrders(List<LineItem> kitchenOrders) {
+		this.kitchenOrders = kitchenOrders;
+	}
+
+    
+}
+```
+#### LineItem
+
+```java
+package org.j4k.workshops.quarkus.domain;
+
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
+public class LineItem {
+
+    String item;
+
+    String name;
+
+	/**
+	 * 
+	 */
+	public LineItem() {
+    }
+
+	/**
+	 * @param item
+	 * @param name
+	 */
+	public LineItem(String item, String name) {
+		this.item = item;
+		this.name = name;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	
+	@Override
+	public String toString() {
+		return "LineItem [item=" + item + ", name=" + name + "]";
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((item == null) ? 0 : item.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LineItem other = (LineItem) obj;
+		if (item == null) {
+			if (other.item != null)
+				return false;
+		} else if (!item.equals(other.item))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
+	/**
+	 * @return the item
+	 */
+	public String getItem() {
+		return item;
+	}
+
+	/**
+	 * @param item the item to set
+	 */
+	public void setItem(String item) {
+		this.item = item;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+}
+```
+### Translating the FavFoodOrder into Our Domain with a Transaction Script
+
+#### Test First
+
+First let's write a test (this is just testing our business logic so feel free to copy and paste.)  The interesting stuff is next.
+
+```java
+package org.j4k.workshops.quarkus.infrastucture;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Arrays;
+import java.util.UUID;
+
+import org.j4k.workshops.quarkus.domain.*;
+import org.j4k.workshops.quarkus.domain.favfood.*;
+import org.junit.jupiter.api.Test;
+
+public class FavFoodOrderProcessorTest {
+    
+
+    @Test
+    public void testFavFoodOrder(){
+
+        FavFoodOrder favFoodOrder = new FavFoodOrder();
+        favFoodOrder.setCustomerName("Lemmy");
+        favFoodOrder.setLineItems(Arrays.asList(new FavFoodLineItem(UUID.randomUUID().toString(), "COFFEE_BLACK", 1)));
+        OrderInCommand expectedOrderInCommand = new OrderInCommand();
+        expectedOrderInCommand.addBeverage(new LineItem("COFFEE_BLACK", "Lemmy"));
+
+        OrderInCommand resultingOrderInCommand = FavFoodOrderHandler.createFromFavFoodOrder(favFoodOrder);
+
+        assertEquals(expectedOrderInCommand.getBeverages().size(), resultingOrderInCommand.getBeverages().size());
+        assertEquals(expectedOrderInCommand.getBeverages().get(0).getName(), resultingOrderInCommand.getBeverages().get(0).getName());
+        assertEquals(expectedOrderInCommand.getBeverages().get(0).getItem(), resultingOrderInCommand.getBeverages().get(0).getItem());
+        
+    }
+}
+```
+
+#### FavFoodOrderHandler (Our Transaction Script)
+
+We use Object Oriented design principles throughout the application.  When you look at the code in the core application the Order domain object encapsulates all of the business logic for creating events from commands.
+
+In this case we will use an anemic domain model and handle the translation with a transaction script.  The OrderInCommand is after all only a command.  Other parts of our system will handle persistence (for now anyway), and so using a transaction script in the favfood package makes sense.
+
+```java
+package org.j4k.workshops.quarkus.domain.favfood;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.j4k.workshops.quarkus.domain.LineItem;
+import org.j4k.workshops.quarkus.domain.OrderInCommand;
+import org.j4k.workshops.quarkus.domain.favfood.*;
+
+public class FavFoodOrderHandler {
+
+    static final Set<String> beverages = new HashSet<>(Arrays.asList("CAPPUCCINO","COFFEE_BLACK","COFFEE_WITH_ROOM","ESPRESSO","ESPRESSO_DOUBLE","LATTE"));
+
+    static final Set<String> food = new HashSet<>(Arrays.asList("CAKEPOP","CROISSANT","CROISSANT_CHOCOLATE","MUFFIN"));
+    
+    public static OrderInCommand createFromFavFoodOrder(final FavFoodOrder favFoodOrder){
+
+        OrderInCommand orderInCommand = new OrderInCommand();
+
+        favFoodOrder.getLineItems().forEach(favFoodLineItem -> {
+            if(beverages.contains(favFoodLineItem.getItem())){
+                for(int i=0;i<favFoodLineItem.getQuantity();i++){
+                    orderInCommand.addBeverage(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));  
+                }
+            }else if(food.contains(favFoodLineItem.getItem())){
+                for(int i=0;i<favFoodLineItem.getQuantity();i++){
+                    orderInCommand.addKitchenOrder(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));  
+                }
+            }
+        });
+        return orderInCommand;
+    }
+    
+
+}
+
+```
+
+## Persisting our Order with Hibernate Panache
+
+[Hibernate Panache](https://quarkus.io/guides/hibernate-orm-panache)
