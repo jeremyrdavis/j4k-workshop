@@ -4,22 +4,46 @@ In this workshop you will build a microservice to integrate the existing Quarkus
 
 ## Table of Contents
 
-1. Creating a Project with https://code.quarkus.io
-2. Visual Studio Code
-3. Getting Started with Your Project
-4. Dev Mode
-5. Hibernate Panache
+1. Pre-requisites
+2. Application Requirements (what you're going to build)
+2a. Background
+2b. Documentation
+3. Creating a project at https://code.quarkus.io
+4. Importing the project into Visual Studio Code
+5. Getting Started with the project
+5a. Importing the project into Visual Studio Code
+5b. Testing Quarkus applications
+5c. Quarkus dev mode
 
 ## Pre-requisites
 
 You need:
-* a JDK installed on your machine
+* a JDK installed on your machine (the workshop was developed with 11)
+    * [Adopt OpenJDK](https://adoptopenjdk.net/) is an easy way to get started with OpenJDK
+    * [Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) the official, Oracle version
 * a Github account
-* an IDE (the examples will use Visual Studio Code)
--- Visual Studio Code
--- IntelliJ
+    * [Github](https://github.com/)
+* an IDE (although the workshop authors use IntelliJ, and it will have to be pried from our cold, dead fingers, the examples all use Visual Studio Code, which is a pretty great IDE)
+    * [Visual Studio Code](https://code.visualstudio.com/)
+        * Be sure to install the Java and Quarkus tools for VS Code: (https://code.visualstudio.com/docs/languages/java)
+    * [IntelliJ](https://www.jetbrains.com/idea/)
+    * [Eclipse](https://www.eclipse.org/)
+    * [Netbeans](https://netbeans.org/)
 
 ## Application Requirements
+
+### Background
+
+Because to go orders have recently taken on a new importance :mask: the Quarkus Coffeeshop business team has recently inked a deal with FavFood Delivery.  FavFood requires us, the Quarkus Coffeeshop dev team, to implement a REST endpoint for them to call with to go orders.
+
+In this workshop we will consume their JSON format, translate it into our expected format, and enter it into the Quarkus Coffeeshop system.  Along the way we will learn how to:
+* Quickly create a Quarkus application
+* About Quarkus extensions
+* Running Quarkus in dev mode (developer joy!)
+* Reactive messaging with SmallRye reactive messaging
+* Making REST calls
+
+### Documentation
 
 FavFood has supplied us with an [OpenApi](https://www.openapis.org/) document describing the service that we need to stand up in order to integrate with them.  Don't worry if you are unfamiliar with the OpenAPI spec, but it is worth checking out after the workshop: [SwaggerIO OpenAPI Specification](https://swagger.io/specification/)
 
@@ -84,9 +108,11 @@ We need to accept an "Order" object with properties, "customerName," "id," and a
 * Click "Generate Your Application" and Push to Github
 * Clone the repository on your filesystem
 
-TODO: Leave out one dependency and add it with the maven plugin later in the tutorial
+*Note:* We have intentionally left out one dependency so that you can add it later with Quarkus' Maven plugin.  This an attempt at forshadowing and is designed to make the workshop more enjoyable 
 
-## Visual Studio Code
+## Getting Started with Your Project
+
+### Importing the project into Visual Studio Code
 
 * Open Visual Studio Code
 * Open your existing workspace
@@ -95,17 +121,9 @@ TODO: Leave out one dependency and add it with the maven plugin later in the tut
 
 TODO: Have a workspace ready or add instructions for creating one
 
-## Getting Started with Your Project
+#### pom.xml
 
-### Visual Studio Code
-
-Visual Studio Code contains plugins for Java and Quarkus
-
-TODO: Instructions for installing the plugins
-
-### pom.xml
-
-The selections you made are in the pom.xml :
+The selections you made at https://code.quarkus.io are in the pom.xml :
 
 ```xml
   <dependencies>
@@ -146,7 +164,7 @@ The selections you made are in the pom.xml :
   </dependencies>
 ```
 
-For more on [Quarkus modules](https://quarkus.io/guides/writing-extensions)
+For more on [Quarkus extensions](https://quarkus.io/guides/writing-extensions)
 
 
 ### Testing Quarkus Applications
@@ -157,15 +175,14 @@ For more on [Quarkus modules](https://quarkus.io/guides/writing-extensions)
 ** Open a Terminal from within Visual Studio Code and type the following:
 
 ```shell
-
 ./mvnw clean test
-
 ```
+
 ### Quarkus Tests
 
 You have probably noticed that the test classes are annotated with "@QuarkusTest."  The test spins up a version of Quarkus, calls the endpoint using rest-assured, and verifies the output using [Rest-Assured](https://rest-assured.io)
 
-## Dev Mode
+### Dev Mode
 
 quarkus:dev runs Quarkus in development mode. This enables hot deployment with background compilation, which means that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource files like the configuration property file. Refreshing the browser triggers a scan of the workspace, and if any changes are detected, the Java files are recompiled and the application is redeployed; your request is then serviced by the redeployed application. If there are any issues with compilation or deployment an error page will let you know.
 This will also listen for a debugger on port 5005. If you want to wait for the debugger to attach before running you can pass -Dsuspend on the command line. If you don’t want the debugger at all you can use -Ddebug=false.
