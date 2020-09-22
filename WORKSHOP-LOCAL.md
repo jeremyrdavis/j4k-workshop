@@ -733,7 +733,7 @@ You can commit the changes to github if you like:
 git commit -am "completed step 1"
 ```
 
-## Getting the FavFoodOrder into our System
+## Getting the FavFoodOrder into our Format
 
 ### Our Domain
 
@@ -1123,6 +1123,42 @@ public class FavFoodOrderHandler {
 
 }
 
+```
+## Getting the FavFoodOrder into our System
+
+We are going to use Quarkus' REST Client to call an existing endpoint in the web application
+
+```java
+package org.j4k.workshops.quarkus.infrastructure;
+
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.j4k.workshops.quarkus.domain.OrderInCommand;
+
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import java.util.concurrent.CompletionStage;
+
+@Path("/order")
+@RegisterRestClient
+public interface RESTService {
+
+    @POST
+    CompletionStage<Response> placeOrders(OrderInCommand createOrderCommand);
+}
+```
+
+Update the application.properties to contain:
+
+```properties
+# REST CLIENT
+%dev.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/url=http://localhost:8080
+%test.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/url=http://localhost:8080
+%prod.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/url=${REST_URL}
+
+%dev.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%test.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%prod.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 ```
 
 ## Persisting our Order with Hibernate Panache
