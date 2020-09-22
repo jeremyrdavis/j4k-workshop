@@ -19,6 +19,11 @@ In this workshop you will build a microservice to integrate the existing Quarkus
 1. Starting on Our Application
     1. Test First and Fail Fast
     1. Implement Our Endpoint
+    1. The FavFood Domain Model
+1. Getting the FavFood Order into Our Format
+    1. Our Domain
+    1. @RegisterForReflection    
+
 
 
 ## Pre-requisites
@@ -754,9 +759,11 @@ public class LineItem {
 }
 ```
 
-### Re-Run the Test
+#### Re-Run the Test
 
 The test should now pass!
+
+#### Commit!
 
 You can commit the changes to github if you like:
 
@@ -764,7 +771,19 @@ You can commit the changes to github if you like:
 git commit -am "completed step 1"
 ```
 
-## Getting the FavFoodOrder into our Format
+## Getting the FavFood Order into our Format
+
+### @RegisterForReflection
+
+Most of this section is the business logic for translating our partner's domain model into our domain model.
+
+The use of @RegisterForReflection, however, is an important Quarkus concept.
+
+(https://www.graalvm.org/reference-manual/native-image/)
+
+(https://quarkus.io/guides/writing-native-applications-tips)
+
+(https://developers.redhat.com/blog/2019/03/29/quarkus-why-compile-to-native/)
 
 ### Our Domain
 
