@@ -190,9 +190,20 @@ You have probably noticed that the test classes are annotated with "@QuarkusTest
 
 ### Dev Mode
 
-quarkus:dev runs Quarkus in development mode. This enables hot deployment with background compilation, which means that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource files like the configuration property file. Refreshing the browser triggers a scan of the workspace, and if any changes are detected, the Java files are recompiled and the application is redeployed; your request is then serviced by the redeployed application. If there are any issues with compilation or deployment an error page will let you know.
-This will also listen for a debugger on port 5005. If you want to wait for the debugger to attach before running you can pass -Dsuspend on the command line. If you don’t want the debugger at all you can use -Ddebug=false.
-- [QUARKUS - CREATING YOUR FIRST APPLICATION](https://quarkus.io/guides/getting-started#development-mode)
+"quarkus:dev runs Quarkus in development mode. This enables hot deployment with background compilation, which means that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource files like the configuration property file. 
+
+Refreshing the browser triggers a scan of the workspace, and if any changes are detected, the Java files are recompiled and the application is redeployed; your request is then serviced by the redeployed application. If there are any issues with compilation or deployment an error page will let you know.
+
+This will also listen for a debugger on port 5005. If you want to wait for the debugger to attach before running you can pass -Dsuspend on the command line. If you don’t want the debugger at all you can use -Ddebug=false."
+
+https://quarkus.io/guides/getting-started#development-mode
+
+:sunglasses: *Q-TIP* : when running multiple intances of Quarkus locally, which is pretty common in a microservices architecture you can have each one listen for a debugger on different ports.  For example when working the the Quarkus Coffeeshop your humble workshop authors typically assign the ports:
+* web "-Ddebug=5005"
+* core "-Ddebug=5006"
+* barista "-Ddebug=5007"
+
+
 
 Start Quarkus in dev mode:
 
@@ -201,12 +212,11 @@ Start Quarkus in dev mode:
 ./mvnw clean compile quarkus:dev
 
 ```
-Open http://localhost:8080
-Open http://localhost:8080/hello
+Open http://localhost:8080 and http://localhost:8080/hello
 
 #### Live changes
 
-In VS Code open the ExampleResource class (src/main/java/org/j4k/workshops/quarkus/ExampleResource.java)
+Open the ExampleResource class (org.j4k.workshops.quarkus.ExampleResource.java.  This class was generated when we created our application.  It doesn't do much.  We will fix that.
 
 Change the message from "hello" to something more prosaic, like "hello, world!" and save the file.  Now reload your browser.
 
@@ -220,7 +230,7 @@ Once you're happy with the message, and your test are passing you can commit you
 
 ##### Some More Testing
 
-You cn run the test again without stopping Quarkus.  The tests use a different port so you can keep Quarkus runing in dev mode and run tests at the same time so we can fail our test while the app is running
+You can run the test again without stopping Quarkus.  The tests use a different port so you can keep Quarkus runing in dev mode and run tests at the same time so we can fail our test while the app is running
 
 #### Configuration and Parameterizing the Greeting Message
 
@@ -373,6 +383,9 @@ public class FavFoodResourceTest {
 ```
 #### Rest Assured Test
 
+[Rest Assured](https://rest-assured.io/) is a great testing tool.  It is included with the RESTEasy extension.  We are also going to use the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshops authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
+
+
 The Rest-Assured part of our test is:
 
 ```java
@@ -424,6 +437,8 @@ These three methods create the JSON payload we will send to our REST endpoint.  
 
 Run the test.  It should of course fail because we haven't implemented our endpoint yet.
 
+*IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshops authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute Lemmy for a customer of your choosing.
+
 ### Implement Our Endpoint
 
 Create the "infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.infrastructure.FavFoodResource" with the following content:
@@ -450,8 +465,6 @@ Our class won't compile of course because FavFoodOrder doesn't exist.
 ### Create the FavFood domain model
 
 #### FavFoodOrder
-
-TODO: Move these to "org.j4k.workshops.quarkus.domain.favfood" package
 
 Create a "domain" package in "src/test," and create a class, "FavFoodOrder," in the "domain package":
 
@@ -669,8 +682,6 @@ public class LineItem {
 		return result;
 	}
 
-
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -740,9 +751,6 @@ public class LineItem {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-
-
-
 }
 ```
 
@@ -760,7 +768,7 @@ git commit -am "completed step 1"
 
 ### Our Domain
 
-Our system expects:
+The other Quarkus Coffeeshop developers have documented their endpoint with the follwoing document:
 
 ```yaml
 ---
@@ -815,7 +823,7 @@ components:
           $ref: '#/components/schemas/ListLineItem'
 ```
 
-*NOTE*: In the real world we would import a jar file with these objects, but for the sake of this workshop we will create the OrderInCommand manually.  Actually we will create two classes: OrderInCommand and LineItem.  This is simple stuff so feel free to copy and paste from below.
+*NOTE*: We could of course import a jar file with these objects, but for the sake of this workshop we will create the OrderInCommand manually.  Actually we will create two classes: OrderInCommand and LineItem.  This is simple stuff so feel free to copy and paste from below.
 
 #### OrderInCommand
 
