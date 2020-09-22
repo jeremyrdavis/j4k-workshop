@@ -5,15 +5,15 @@ In this workshop you will build a microservice to integrate the existing Quarkus
 ## Table of Contents
 
 1. Pre-requisites
-2. Application Requirements (what you're going to build)
-2a. Background
-2b. Documentation
-3. Creating a project at https://code.quarkus.io
-4. Importing the project into Visual Studio Code
-5. Getting Started with the project
-5a. Importing the project into Visual Studio Code
-5b. Testing Quarkus applications
-5c. Quarkus dev mode
+1. Application Requirements (what you're going to build)
+	1. Background
+	1. Documentation
+1. Creating a project at https://code.quarkus.io
+1. Importing the project into Visual Studio Code
+1. Getting Started with the project
+	1. Importing the project into Visual Studio Code
+	1. Testing Quarkus applications
+1. Quarkus dev mode
 
 ## Pre-requisites
 
