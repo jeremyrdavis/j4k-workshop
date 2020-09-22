@@ -14,6 +14,12 @@ In this workshop you will build a microservice to integrate the existing Quarkus
 	1. Importing the project into Visual Studio Code
 	1. Testing Quarkus applications
 1. Quarkus dev mode
+    1. Live changes
+    1. Configuration and Parameterizing the Greeting Message
+1. Starting on Our Application
+    1. Test First and Fail Fast
+    1. Implement Our Endpoint
+
 
 ## Pre-requisites
 
@@ -198,7 +204,7 @@ Start Quarkus in dev mode:
 Open http://localhost:8080
 Open http://localhost:8080/hello
 
-### Live changes
+#### Live changes
 
 In VS Code open the ExampleResource class (src/main/java/org/j4k/workshops/quarkus/ExampleResource.java)
 
@@ -212,11 +218,11 @@ Quarkus Code Wisdom: *Coding is mostly trial and error.  The faster your feedbac
 
 Once you're happy with the message, and your test are passing you can commit your code.  Of course the tests aren't going to pass no that we've changed the message
 
-### Some More Testing
+##### Some More Testing
 
-You can run the test again without stopping Quarkus.  The tests use a different port so you can keep Quarkus runing in dev mode and run tests at the same time so we can fail our test while the app is running
+You cn run the test again without stopping Quarkus.  The tests use a different port so you can keep Quarkus runing in dev mode and run tests at the same time so we can fail our test while the app is running
 
-#### Parameterize the Greeting Message
+#### Configuration and Parameterizing the Greeting Message
 
 Let's parameterize the message by moving it into the application.properties file found in src/main/resources by adding the following:
 
@@ -299,9 +305,9 @@ You can commit the changes to github if you want:
 git commmit -am "Parameterized ExampleResource message"
 ```
 
-## Our Application
+## Starting on Our Application
 
-### Let's Write a Test and Fail Fast
+### Test First  and Fail Fast
 
 Let's create a new package, "org.j4k.workshops.quarkus.infrastructure," and a test, "FavFoodResourceTest" for our REST service:
 
