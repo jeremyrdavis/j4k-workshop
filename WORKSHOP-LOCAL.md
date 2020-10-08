@@ -388,7 +388,7 @@ public class FavFoodResourceTest {
 ```
 #### Rest Assured Test
 
-[Rest Assured](https://rest-assured.io/) is a great testing tool.  It is included with the RESTEasy extension.  We are also going to use the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshops authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
+[Rest Assured](https://rest-assured.io/) is a great testing tool.  It is included with the RESTEasy extension.  We are also going to use the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshop authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
 
 
 The Rest-Assured part of our test is:
