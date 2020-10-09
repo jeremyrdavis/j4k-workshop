@@ -111,7 +111,9 @@ We need to accept an "Order" object with properties, "customerName," "id," and a
 ** quarkus-coffeeshop-workshop
 ** Maven (Quarkus supports Gradle as well, but this tutorial is built with Maven )
 * From the menu select 
-** "RESTEasy JSON-B"
+** RESTEasy JAX-RS
+** RESTEasy JSON-B
+** REST Client JSON-B
 * Click "Generate Your Application" and Push to Github
 * Clone the repository on your filesystem
 
@@ -140,36 +142,14 @@ The selections you made at https://code.quarkus.io are in the pom.xml :
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-h2</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jsonb</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
+      <artifactId>quarkus-rest-client-jsonb</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-panache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-postgresql</artifactId>
-    </dependency>
-  </dependencies>
 ```
+
 
 For more on [Quarkus extensions](https://quarkus.io/guides/writing-extensions)
 
@@ -206,14 +186,14 @@ https://quarkus.io/guides/getting-started#development-mode
 
 
 
-Start Quarkus in dev mode:
+Start Quarkus in dev mode from the Terminal in VS Code or from a terminal window on your machine:
 
 ```shell
 
 ./mvnw clean compile quarkus:dev
 
 ```
-Open http://localhost:8080 and http://localhost:8080/hello
+Open http://localhost:8080 and http://localhost:8080/resteasy/hello
 
 #### Live changes
 
@@ -262,8 +242,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/hello")
+@Path("/resteasy/hello")
 public class ExampleResource {
+
 
     @ConfigProperty(name="hello.message")
     String helloMessage;
@@ -273,7 +254,6 @@ public class ExampleResource {
     public String hello() {
         return helloMessage;
     }
-}
 ```
 
 Refresh your browser.  You should of course see the new %dev.hello.message.
@@ -300,7 +280,7 @@ public class ExampleResourceTest {
     @Test
     public void testHelloEndpoint() {
         given()
-          .when().get("/hello")
+          .when().get("/resteasy/hello")
           .then()
              .statusCode(200)
              .body(is(helloMessage));
@@ -323,7 +303,7 @@ git commmit -am "Parameterized ExampleResource message"
 Let's create a new package, "org.j4k.workshops.quarkus.infrastructure," and a test, "FavFoodResourceTest" for our REST service:
 
 ```java
-package org.j4k.workshops.quarkus.infrastucture;
+package org.j4k.workshops.quarkus.infrastructure;
 
 import java.util.UUID;
 
@@ -339,6 +319,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 @QuarkusTest
 public class FavFoodResourceTest {
@@ -346,12 +327,12 @@ public class FavFoodResourceTest {
     @Test
     public void testFavFoodEndpoint() {
 
-        final JsonObject order = mockOrder();
+    final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"lineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
 
         given()
           .accept(MediaType.APPLICATION_JSON)
           .contentType(MediaType.APPLICATION_JSON)
-          .body(order.toString())
+          .body(json)
           .when()
           .post("/FavFood")
           .then()
@@ -359,26 +340,6 @@ public class FavFoodResourceTest {
              .body("orderId", equalTo(order.getString("orderId")))
              .body("customerName", equalTo("Lemmy"));
     }
-
-    JsonObject mockOrder(){
-        return Json.createObjectBuilder()
-        .add("customerName", "Lemmy")
-        .add("id", UUID.randomUUID().toString())
-        .add("favFoodLineItems", mockLineItems()).build();    
-    }
-
-	private JsonArray mockLineItems() {
-        final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        arrayBuilder.add(mockLineItem());
-		return arrayBuilder.build();
-	}
-
-	private JsonObject mockLineItem() {
-        return Json.createObjectBuilder()
-        .add("item", "COFFEE_BLACK")
-        .add("orderId", UUID.randomUUID().toString())
-        .add("quantity", 1).build();    
-	}
 
 }
 ```
@@ -410,31 +371,7 @@ The Rest-Assured part of our test is:
 
 Most of it is similar to our earlier test.  The differences are that we have added header information and a body to the POST request.
 
-#### Mock Out an Example Payload
-
-```java
-    JsonObject mockOrder(){
-        return Json.createObjectBuilder()
-        .add("customerName", "Lemmy")
-        .add("id", UUID.randomUUID().toString())
-        .add("favFoodLineItems", mockLineItems()).build();    
-    }
-
-	private JsonArray mockLineItems() {
-        final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        arrayBuilder.add(mockLineItem());
-		return arrayBuilder.build();
-	}
-
-	private JsonObject mockLineItem() {
-        return Json.createObjectBuilder()
-        .add("item", "BLACK_COFFEE")
-        .add("id", UUID.randomUUID().toString())
-        .add("quantity", 1).build();    
-	}
-```
-
-These three methods create the JSON payload we will send to our REST endpoint.  We are using [JSON-B](http://json-b.net/) which is one of the Json libraries available in Quarkus.  Jackson is also available if you prefer their API's.
+#### Run the Test
 
 Run the test.  It should of course fail because we haven't implemented our endpoint yet.
 
@@ -442,7 +379,7 @@ Run the test.  It should of course fail because we haven't implemented our endpo
 
 ### Implement Our Endpoint
 
-Create the "infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.infrastructure.FavFoodResource" with the following content:
+Create the "infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.infrastructure.ApiResource" with the following content:
 
 ```java
 package org.j4k.workshops.quarkus.infrastructure;
@@ -451,10 +388,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-@Path("FavFood")
-public class FavFoodResource {
+import org.j4k.workshops.quarkus.favfood.domain.FavFoodOrder;
+
+@Path("/api")
+public class ApiResource {
 
     @POST
+	@Path("/favfood)
     public Response placeOrder(final FavFoodOrder favFoodOrder){
         return Response.accepted().entity(favFoodOrder).build();
     }
@@ -467,10 +407,12 @@ Our class won't compile of course because FavFoodOrder doesn't exist.
 
 #### FavFoodOrder
 
-Create a "domain" package in "src/test," and create a class, "FavFoodOrder," in the "domain package":
+Create a package for our FavFood domain objects in "src/main/org/j4k/workshops/quarkus/favfood/domain."
+
+Create a class, "FavFoodOrder," in the package:
 
 ```java
-package org.j4k.workshops.quarkus.domain;
+package org.j4k.workshops.quarkus.favfood.domain;
 
 import java.util.List;
 
@@ -483,7 +425,7 @@ public class FavFoodOrder {
 
     String customerName;
 
-    List<LineItem> favFoodLineItems;
+    List<FavFoodLineItem> favFoodLineItems;
 
     public FavFoodOrder(){
 
@@ -497,7 +439,7 @@ Use your IDE to generate equals(), hashCode(), toString(), and getters and sette
 The whole class is below for reference:
 
 ```java
-package org.j4k.workshops.quarkus.domain;
+package org.j4k.workshops.quarkus.favfood.domain;
 
 import java.util.List;
 
@@ -510,11 +452,32 @@ public class FavFoodOrder {
 
     String customerName;
 
-    List<LineItem> favFoodLineItems;
+    List<FavFoodLineItem> favFoodLineItems;
 
     public FavFoodOrder(){
 
-    }
+	}
+
+	/**
+	 * @param orderId
+	 * @param customerName
+	 * @param favFoodLineItems
+	 */
+	public FavFoodOrder(String orderId, String customerName, List<FavFoodLineItem> favFoodLineItems) {
+		this.orderId = orderId;
+		this.customerName = customerName;
+		this.favFoodLineItems = favFoodLineItems;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	
+	@Override
+	public String toString() {
+		return "FavFoodOrder [customerName=" + customerName + ", favFoodLineItems=" + favFoodLineItems + ", orderId="
+				+ orderId + "]";
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -561,15 +524,6 @@ public class FavFoodOrder {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	
-	@Override
-	public String toString() {
-		return "FavFoodOrder [customerName=" + customerName + ", favFoodLineItems=" + favFoodLineItems + ", orderId=" + orderId + "]";
-	}
-
 	/**
 	 * @return the orderId
 	 */
@@ -601,18 +555,19 @@ public class FavFoodOrder {
 	/**
 	 * @return the favFoodLineItems
 	 */
-	public List<LineItem> getLineItems() {
+	public List<FavFoodLineItem> getFavFoodLineItems() {
 		return favFoodLineItems;
 	}
 
 	/**
 	 * @param favFoodLineItems the favFoodLineItems to set
 	 */
-	public void setLineItems(List<LineItem> favFoodLineItems) {
+	public void setFavFoodLineItems(List<FavFoodLineItem> favFoodLineItems) {
 		this.favFoodLineItems = favFoodLineItems;
 	}
+	
+	
 }
-
 ```
 
 Your IDE should be complaining at this point because we don't have a "LineItem" class yet.  Let's fix that!
@@ -623,12 +578,12 @@ Just like the FavFoodOrder create a class, "LineItem," in the "domain package":
 
 ```java
 
-package org.j4k.workshops.quarkus.domain;
+package org.j4k.workshops.quarkus.favfood.domain;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
-public class LineItem {
+public class FavFoodLineItem {
 
     String itemId;
 
@@ -636,7 +591,7 @@ public class LineItem {
 
     int quantity;
 
-    public LineItem(){
+    public FavFoodLineItem(){
 
     }
 
@@ -646,9 +601,9 @@ public class LineItem {
 Repeat the code generation steps above for getters and settes, hashCode(), equals(), and toString() so that you have a class like:
 
 ```java
-package org.j4k.workshops.quarkus.domain;
+package org.j4k.workshops.quarkus.favfood.domain;
 
-public class LineItem {
+public class FavFoodLineItem {
 
     String itemId;
 
@@ -850,6 +805,8 @@ This object is pretty simple.  There are only three things to note:
 * the "addBeverage" and "addKitchenOrder" are convenience methods for adding to the internal List<LineItem> objects
 
 ```java
+package org.j4k.workshops.quarkus.domain;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -1092,7 +1049,7 @@ public class LineItem {
 First let's write a test (this is just testing our business logic so feel free to copy and paste.)  The interesting stuff is next.
 
 ```java
-package org.j4k.workshops.quarkus.infrastucture;
+package org.j4k.workshops.quarkus.favfood.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -1100,10 +1057,9 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.j4k.workshops.quarkus.domain.*;
-import org.j4k.workshops.quarkus.domain.favfood.*;
 import org.junit.jupiter.api.Test;
 
-public class FavFoodOrderProcessorTest {
+public class FavFoodOrderHandlerTest {
     
 
     @Test
@@ -1111,7 +1067,7 @@ public class FavFoodOrderProcessorTest {
 
         FavFoodOrder favFoodOrder = new FavFoodOrder();
         favFoodOrder.setCustomerName("Lemmy");
-        favFoodOrder.setLineItems(Arrays.asList(new FavFoodLineItem(UUID.randomUUID().toString(), "COFFEE_BLACK", 1)));
+        favFoodOrder.setFavFoodLineItems(Arrays.asList(new FavFoodLineItem(UUID.randomUUID().toString(), "COFFEE_BLACK", 1)));
         OrderInCommand expectedOrderInCommand = new OrderInCommand();
         expectedOrderInCommand.addBeverage(new LineItem("COFFEE_BLACK", "Lemmy"));
 
@@ -1132,7 +1088,7 @@ We use Object Oriented design principles throughout the application.  When you l
 In this case we will use an anemic domain model and handle the translation with a transaction script.  The OrderInCommand is after all only a command.  Other parts of our system will handle persistence (for now anyway), and so using a transaction script in the favfood package makes sense.
 
 ```java
-package org.j4k.workshops.quarkus.domain.favfood;
+package org.j4k.workshops.quarkus.favfood.domain;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -1140,7 +1096,6 @@ import java.util.Set;
 
 import org.j4k.workshops.quarkus.domain.LineItem;
 import org.j4k.workshops.quarkus.domain.OrderInCommand;
-import org.j4k.workshops.quarkus.domain.favfood.*;
 
 public class FavFoodOrderHandler {
 
@@ -1152,7 +1107,7 @@ public class FavFoodOrderHandler {
 
         OrderInCommand orderInCommand = new OrderInCommand();
 
-        favFoodOrder.getLineItems().forEach(favFoodLineItem -> {
+        favFoodOrder.getFavFoodLineItems().forEach(favFoodLineItem -> {
             if(beverages.contains(favFoodLineItem.getItem())){
                 for(int i=0;i<favFoodLineItem.getQuantity();i++){
                     orderInCommand.addBeverage(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));  
@@ -1168,7 +1123,6 @@ public class FavFoodOrderHandler {
     
 
 }
-
 ```
 ## Getting the FavFoodOrder into our System
 
@@ -1198,107 +1152,12 @@ Update the application.properties to contain:
 
 ```properties
 # REST CLIENT
-%dev.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/url=http://localhost:8080
-%test.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/url=http://localhost:8080
-%prod.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/url=${REST_URL}
+%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=http://localhost:8080
+%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=http://localhost:8080
+%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=${REST_URL}
 
-%dev.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-%test.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-%prod.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 ```
 
-## MongoDB with Hibernate Panache and Kafka with Microprofile Reactive Messaging
-
-NOTE: For the next sections you will need Docker and Docker Compose to run Kafka and MongoDB
-
-Create a Docker Compose file named, "j4k-docker-compose.yaml" with the following contents (it doesn't have to be in your working directory):
-
-```yaml
-version: '3'
-
-services:
-
-  database:
-    image:  'mongo'
-    container_name:  'quarkus-mongodb-container'
-    environment:
-      - MONGO_INITDB_DATABASE=coffeeshopdb
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=redhat-20
-    volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-    ports:
-      - '27017-27019:27017-27019'
-
-  zookeeper:
-    image: strimzi/kafka:0.11.4-kafka-2.1.0
-    command: [
-      "sh", "-c",
-      "bin/zookeeper-server-start.sh config/zookeeper.properties"
-    ]
-    ports:
-      - "2181:2181"
-    environment:
-      LOG_DIR: /tmp/logs
-
-  kafka:
-    image: strimzi/kafka:0.11.4-kafka-2.1.0
-    command: [
-      "sh", "-c",
-      "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT}"
-    ]
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-    environment:
-      LOG_DIR: "/tmp/logs"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-```
-
-Start it with:
-
-```shell script
-docker-compose j4k-docker-compose.yaml
-```
-
-
-
-
-### Docker
-
-```yaml
-version: '3'
-
-services:
-  crunchy:
-    image:  'crunchydata/crunchy-postgres:centos7-10.9-2.4.1'
-    container_name:  'crunchy'
-    environment:
-      - PG_MODE=primary
-      - PG_PRIMARY_USER=postgres
-      - PG_PRIMARY_PASSWORD=redhat-20
-      - PG_DATABASE=cafedb
-      - PG_USER=cafeuser
-      - PG_PASSWORD=redhat-20
-      - PG_ROOT_PASSWORD=redhat-20
-      - PG_PRIMARY_PORT=5432
-    volumes:
-      - ./pgvolume
-    ports:
-      - '5432:5432'
-
-  pgadmin4:
-    image: crunchydata/crunchy-pgadmin4:centos7-10.9-2.4.1
-    container_name:  'pgadmin4'
-    environment:
-      - PGADMIN_SETUP_EMAIL=quarkus.cafe@redhat.com
-      - PGADMIN_SETUP_PASSWORD=redhat-20
-      - SERVER_PORT=5050
-    volumes:
-      - ./pgadmin4volume
-    ports:
-      - '5050:5050'
-```
