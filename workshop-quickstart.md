@@ -18,10 +18,7 @@ cd scripts
 ./configure_mutiple_users.sh 10 cluster-XxX-1234.cluster-XxX-1234.sandbox000.opentlc.com ocp_token
 ```
 
-
-## Customization 
-Edit line 48 to change target project if needed  
-*Example*
+**To delete deployment run**
 ```
-    project_namespace: user$i-project
+./delete-deployments.sh 10 cluster-XxX-1234.cluster-XxX-1234.sandbox000.opentlc.com ocp_token
 ```

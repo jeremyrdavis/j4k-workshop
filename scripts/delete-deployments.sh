@@ -1,4 +1,5 @@
 #!/bin/bash 
+
 set -x
 
 if [ "$#" -ne 3 ];
@@ -7,6 +8,7 @@ then
   echo "Usage: $0 10 ocp4.example.com ocp_token"
   exit 1
 fi 
+
 
 if ! $(oc whoami &>/dev/null); then
  printf "%s\n" "###############################################################################"
@@ -19,18 +21,8 @@ fi
 export DOMAIN=$2
 export OCP_TOKEN=$3
 
-if [ ! -d  ~/.ansible/roles/tosin2013.quarkus_cafe_demo_role/ ];
-then 
-  ansible-galaxy install tosin2013.quarkus_cafe_demo_role
-fi 
-#https://github.com/tosin2013/quarkus-cafe-demo-role.git
-
 for ((i = 1 ; i <= ${1} ; i++)); do
-  echo "Deploying : quarkus-cafe-user$i"
-
-  oc new-project quarkus-cafe-user$i  
-  oc adm policy add-role-to-user admin user$i 
-
+  echo "deleting : quarkus-cafe-user$i"
 cat >deploy-quarkus-cafe.yml<<YAML
 - hosts: localhost
   become: yes
@@ -48,7 +40,7 @@ cat >deploy-quarkus-cafe.yml<<YAML
     version_kitchen: 2.7.0
     version_web: 2.8.1
     project_namespace: quarkus-cafe-user$i
-    delete_deployment: false
+    delete_deployment: true
     skip_amq_install: false
     skip_quarkus_cafe_barista: false
     skip_quarkus_cafe_core: false
@@ -63,4 +55,5 @@ cat deploy-quarkus-cafe.yml
 sleep 10s
 ansible-playbook  deploy-quarkus-cafe.yml -vv
 rm -rf deploy-quarkus-cafe.yml
+oc delete project quarkus-cafe-user$i
 done
