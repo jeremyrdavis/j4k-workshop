@@ -41,3 +41,5 @@ TODO: Quarkus modules
 
 * Open src/test/java/org/acme/ExampleResourceTest
  
+### Deploy Workshop on OpenShift
+* [j4k workshop OpenShift deployment](workshop-quickstart.md)
