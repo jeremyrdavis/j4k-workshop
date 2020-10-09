@@ -34,10 +34,14 @@ TODO: Have a workspace ready or add instructions for creating one
 
 ### pom.xml
 
-The selections you made are in the pom.xml
-TODO: Quarkus modules
+The selections you made are in the pom.xml  
+
+**TODO:** 
+ - Quarkus modules
 
 ### Testing Quarkus Applications
 
 * Open src/test/java/org/acme/ExampleResourceTest
  
+### Deploy Workshop on OpenShift
+* [j4k workshop OpenShift deployment](workshop-quickstart.md)
