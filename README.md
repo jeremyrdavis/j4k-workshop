@@ -34,8 +34,10 @@ TODO: Have a workspace ready or add instructions for creating one
 
 ### pom.xml
 
-The selections you made are in the pom.xml
-TODO: Quarkus modules
+The selections you made are in the pom.xml  
+
+**TODO:** 
+ - Quarkus modules
 
 ### Testing Quarkus Applications
 
