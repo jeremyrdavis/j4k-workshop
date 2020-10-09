@@ -375,7 +375,7 @@ public class FavFoodResourceTest {
 
 	private JsonObject mockLineItem() {
         return Json.createObjectBuilder()
-        .add("item", "BLACK_COFFEE")
+        .add("item", "COFFEE_BLACK")
         .add("orderId", UUID.randomUUID().toString())
         .add("quantity", 1).build();    
 	}
@@ -1207,6 +1207,8 @@ Update the application.properties to contain:
 %prod.com.redhat.quarkus.cafe.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 ```
 
+## MongoDB with Hibernate Panache and Kafka with Microprofile Reactive Messaging
+
 NOTE: For the next sections you will need Docker and Docker Compose to run Kafka and MongoDB
 
 Create a Docker Compose file named, "j4k-docker-compose.yaml" with the following contents (it doesn't have to be in your working directory):
@@ -1262,168 +1264,8 @@ Start it with:
 docker-compose j4k-docker-compose.yaml
 ```
 
-## Adding Kafka
 
 
-
-```shell script
-./mvnw quarkus:add-extension -Dextension=quarkus-smallrye-reactive-messaging-kafka
-```
-
-
-
-## Persisting our Order with Hibernate Panache
-
-[Hibernate Panache](https://quarkus.io/guides/hibernate-orm-panache)
-
-We can add the necessary extensions 2 ways:
-* the Quarkus Maven Plugin
-* by updating the pom.xml directly
-
-For this example let's update the pom. We need the Hibernate Panache and Quarkus JUnit5 Mockito extensions.  Adding them with the Maven plugin:
-
-```xml
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-mongodb-panache</artifactId>
-    </dependency>
-    <dependency>
-         <groupId>io.quarkus</groupId>
-         <artifactId>quarkus-junit5-mockito</artifactId>
-         <scope>test</scope>
-   </dependency>
-```
-We also need to add the connection string to our application.properties file:
-
-```properties
-# Datasource
-%dev.quarkus.mongodb.database = coffeeshopdb
-%dev.quarkus.mongodb.connection-string = mongodb://coffeeshop-user:redhat-20@localhost:27017/coffeeshopdb
-%dev.quarkus.log.category."io.quarkus.mongodb.panache.runtime".level=DEBUG
-```
-
-### MongoDB and Hibernate Panache
-
-Update the FavFoodOrder by making it extend PanacheMongoEntity:
-
-```java
-public class FavFoodOrder extends PanacheMongoEntity {
-    ...
-}
-```
-
-We also need to tell Panache to use the existing id by annotating our orderId field with "@BsonId":
-
-```java
-
-    @BsonId
-    String orderId;
-
-```
-
-The complete class now looks like:
-
-```java
-package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
-
-import io.quarkus.mongodb.panache.PanacheMongoEntity;
-import org.bson.codecs.pojo.annotations.BsonId;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
-
-public class FavFoodOrder extends PanacheMongoEntity {
-
-    String customerName;
-
-    @BsonId
-    String orderId;
-
-    List<FavFoodLineItem> favFoodLineItems;
-
-    public FavFoodOrder() {
-    }
-
-    public FavFoodOrder(String customerName, String orderId, List<FavFoodLineItem> favFoodLineItems) {
-        this.customerName = customerName;
-        this.orderId = orderId;
-        this.favFoodLineItems = favFoodLineItems;
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", FavFoodOrder.class.getSimpleName() + "[", "]")
-                .add("customerName='" + customerName + "'")
-                .add("orderId='" + orderId + "'")
-                .add("lineItems=" + favFoodLineItems)
-                .toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FavFoodOrder that = (FavFoodOrder) o;
-        return Objects.equals(customerName, that.customerName) &&
-                Objects.equals(orderId, that.orderId) &&
-                Objects.equals(favFoodLineItems, that.favFoodLineItems);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(customerName, orderId, favFoodLineItems);
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public List<FavFoodLineItem> getLineItems() {
-        return favFoodLineItems;
-    }
-
-    public void setLineItems(List<FavFoodLineItem> favFoodLineItems) {
-        this.favFoodLineItems = favFoodLineItems;
-    }
-}
-```
-
-That's all we need to do!
-
-We will be using the Repository Pattern so create a new interface in the infrastructure package:
-
-```java
-package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
-
-import io.quarkus.mongodb.panache.PanacheMongoRepository;
-import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrder;
-
-public class FavFoodOrderRepository implements PanacheMongoRepository<FavFoodOrder> {
-}
-
-```
-
-And we're done!
-
-We will let the ApiResource handle persistence so we need to inject the FavFoodOrderRepository into the class:
-
-```java
-
-```
 
 ### Docker
 
