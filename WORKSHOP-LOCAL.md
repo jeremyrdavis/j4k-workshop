@@ -298,6 +298,22 @@ git commmit -am "Parameterized ExampleResource message"
 
 ## Starting on Our Application
 
+### Setting up Logging
+
+Your humble workshop authors hate using System.out.println so we will start by configuring logging.
+
+Add the following to your application.properties file:
+
+```properties
+# Logging
+#quarkus.log.console.format=%d{HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n
+quarkus.log.console.format=%-5p [%c{2.}] (%t) %s%e%n
+quarkus.log.level=INFO
+quarkus.log.category."org.j4k".level=DEBUG
+quarkus.log.category."org.apache.kafka".level=FATAL
+quarkus.log.category."org.testcontainers".level=FATAL
+```
+
 ### Test First  and Fail Fast
 
 Let's create a new package, "org.j4k.workshops.quarkus.infrastructure," and a test, "FavFoodResourceTest" for our REST service:
@@ -327,7 +343,8 @@ public class FavFoodResourceTest {
     @Test
     public void testFavFoodEndpoint() {
 
-    final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"lineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
+        final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
+
 
         given()
           .accept(MediaType.APPLICATION_JSON)
@@ -1152,9 +1169,9 @@ Update the application.properties to contain:
 
 ```properties
 # REST CLIENT
-%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=http://localhost:8080
-%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=http://localhost:8080
-%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=${REST_URL}
+%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
 
 %dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 %test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
