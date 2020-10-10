@@ -1066,32 +1066,40 @@ public class LineItem {
 First let's write a test (this is just testing our business logic so feel free to copy and paste.)  The interesting stuff is next.
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodLineItem;
+import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.domain.LineItem;
+import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
+import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.j4k.workshops.quarkus.domain.*;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FavFoodOrderHandlerTest {
-    
+
 
     @Test
-    public void testFavFoodOrder(){
+    public void testHandleOrder() {
 
         FavFoodOrder favFoodOrder = new FavFoodOrder();
-        favFoodOrder.setCustomerName("Lemmy");
-        favFoodOrder.setFavFoodLineItems(Arrays.asList(new FavFoodLineItem(UUID.randomUUID().toString(), "COFFEE_BLACK", 1)));
+        favFoodOrder.setCustomerName("Spock");
+        favFoodOrder.setOrderId(UUID.randomUUID().toString());
+        favFoodOrder.setFavFoodLineItems(
+                new ArrayList<>(
+                    Arrays.asList(
+                            new FavFoodLineItem("COFFEE_BLACK", UUID.randomUUID().toString(), 1)
+                    )));
 
-        OrderInCommand resultingOrderInCommand = FavFoodOrderHandler.createFromFavFoodOrder(favFoodOrder);
+        OrderInCommand expectedOrderInCommand = FavFoodOrderHandler.handleOrder(favFoodOrder);
 
-        assertEquals(expectedOrderInCommand.getBeverages().size(), resultingOrderInCommand.getBeverages().size());
-        assertEquals(expectedOrderInCommand.getBeverages().get(0).getName(), resultingOrderInCommand.getBeverages().get(0).getName());
-        assertEquals(expectedOrderInCommand.getBeverages().get(0).getItem(), resultingOrderInCommand.getBeverages().get(0).getItem());
-        
+        assertEquals(1, expectedOrderInCommand.getBeverages().size());
+        LineItem beverage = expectedOrderInCommand.getBeverages().get(0);
+        assertEquals("COFFEE_BLACK", beverage.getItem());
     }
 }
 ```
@@ -1103,41 +1111,38 @@ We use Object Oriented design principles throughout the application.  When you l
 In this case we will use an anemic domain model and handle the translation with a transaction script.  The OrderInCommand is after all only a command.  Other parts of our system will handle persistence (for now anyway), and so using a transaction script in the favfood package makes sense.
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
+
+import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.domain.LineItem;
+import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.j4k.workshops.quarkus.domain.LineItem;
-import org.j4k.workshops.quarkus.domain.OrderInCommand;
 
 public class FavFoodOrderHandler {
 
     static final Set<String> beverages = new HashSet<>(Arrays.asList("CAPPUCCINO","COFFEE_BLACK","COFFEE_WITH_ROOM","ESPRESSO","ESPRESSO_DOUBLE","LATTE"));
 
     static final Set<String> food = new HashSet<>(Arrays.asList("CAKEPOP","CROISSANT","CROISSANT_CHOCOLATE","MUFFIN"));
-    
-    public static OrderInCommand createFromFavFoodOrder(final FavFoodOrder favFoodOrder){
 
+    public static OrderInCommand handleOrder(final FavFoodOrder favFoodOrder){
         OrderInCommand orderInCommand = new OrderInCommand();
-		orderInCommand.setId(UUID.randomUUID().toString());
 
         favFoodOrder.getFavFoodLineItems().forEach(favFoodLineItem -> {
             if(beverages.contains(favFoodLineItem.getItem())){
                 for(int i=0;i<favFoodLineItem.getQuantity();i++){
-                    orderInCommand.addBeverage(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));  
+                    orderInCommand.addBeverage(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));
                 }
             }else if(food.contains(favFoodLineItem.getItem())){
                 for(int i=0;i<favFoodLineItem.getQuantity();i++){
-                    orderInCommand.addKitchenOrder(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));  
+                    orderInCommand.addKitchenOrder(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));
                 }
             }
         });
         return orderInCommand;
     }
-    
-
 }
 ```
 ## Getting the FavFoodOrder into our System
