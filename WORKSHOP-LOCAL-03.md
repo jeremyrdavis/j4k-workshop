@@ -28,8 +28,8 @@ application.properties:
 
 ```properties
 # Kafka
+# Kafka
 %dev.mp.messaging.outgoing.orders.connector=smallrye-kafka
-%dev.mp.messaging.outgoing.orders.bootstrap.servers=localhost:9092
 %dev.mp.messaging.outgoing.orders.value.serializer=org.apache.kafka.common.serialization.StringSerializer
 %dev.mp.messaging.outgoing.orders.topic=orders
 
@@ -129,4 +129,7 @@ public class FavFoodOrderTest {
     }
 }
 ```
+### Building
 
+./mvnw clean package -Dquarkus.container-image.build=true
+docker build -f src/main/docker/Dockerfile.jvm -t jeremydavis/j4k-workshop .

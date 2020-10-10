@@ -1085,8 +1085,6 @@ public class FavFoodOrderHandlerTest {
         FavFoodOrder favFoodOrder = new FavFoodOrder();
         favFoodOrder.setCustomerName("Lemmy");
         favFoodOrder.setFavFoodLineItems(Arrays.asList(new FavFoodLineItem(UUID.randomUUID().toString(), "COFFEE_BLACK", 1)));
-        OrderInCommand expectedOrderInCommand = new OrderInCommand();
-        expectedOrderInCommand.addBeverage(new LineItem("COFFEE_BLACK", "Lemmy"));
 
         OrderInCommand resultingOrderInCommand = FavFoodOrderHandler.createFromFavFoodOrder(favFoodOrder);
 
@@ -1123,6 +1121,7 @@ public class FavFoodOrderHandler {
     public static OrderInCommand createFromFavFoodOrder(final FavFoodOrder favFoodOrder){
 
         OrderInCommand orderInCommand = new OrderInCommand();
+		orderInCommand.setId(UUID.randomUUID().toString());
 
         favFoodOrder.getFavFoodLineItems().forEach(favFoodLineItem -> {
             if(beverages.contains(favFoodLineItem.getItem())){
