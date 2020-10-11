@@ -42,9 +42,9 @@ Update our test:
 
 ```java
 @QuarkusTest @QuarkusTestResource(KafkaTestResource.class)
-public class FavFoodOrderTest {
+public class ApiResouceTest {
 
-    Logger logger = LoggerFactory.getLogger(FavFoodOrderTest.class);
+    Logger logger = LoggerFactory.getLogger(ApiResourceTest.class);
 
 /*
     @InjectMock
