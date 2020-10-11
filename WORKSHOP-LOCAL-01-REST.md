@@ -40,6 +40,19 @@ You need:
     * [IntelliJ](https://www.jetbrains.com/idea/)
     * [Eclipse](https://www.eclipse.org/)
     * [Netbeans](https://netbeans.org/)
+* a REST development tool
+    * [Postman](https://www.postman.com/) is what I use
+    * Browser plugins:
+        * Firefox 
+	    * https://addons.mozilla.org/en-US/firefox/addon/rested/
+	    * https://addons.mozilla.org/en-US/firefox/addon/restclient/
+	    * https://addons.mozilla.org/en-US/firefox/addon/rester/
+        * Chrome
+	    * https://chrome.google.com/webstore/detail/advanced-rest-client/
+	    * https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm?hl=en
+* Docker (for the Kafka and MongoDB steps)
+    * https://www.docker.com/products/docker-desktop
+    * https://docs.docker.com/engine/install/ubuntu/
 
 ## Application Requirements
 
