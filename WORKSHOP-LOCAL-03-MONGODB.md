@@ -1,4 +1,4 @@
-# 02: Persistence with Hibernate Panache and MogoDB
+# 03: Persistence with Hibernate Panache and MogoDB
 
 ## MongoDB with Hibernate Panache and Kafka with Microprofile Reactive Messaging
 
