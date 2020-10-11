@@ -6,7 +6,9 @@ Let's swap out our REST call by directly sending the order to a Kafka Topic
 
 First we need to add SmallRye Reactive Messaging and 2 dependencies that will help us test Kafka:
 
-## Workin with Kafka
+## Add Kafka to our application
+
+### Add the Kafka dependencies to our pom.xml
 
 ```xml
  <dependency>
@@ -24,6 +26,8 @@ First we need to add SmallRye Reactive Messaging and 2 dependencies that will he
 </dependency>
 ```
 
+### Add the Kafka configuration to our application.properties
+
 application.properties:
 
 ```properties
@@ -36,6 +40,8 @@ application.properties:
 %test.mp.messaging.outgoing.orders.value.serializer=org.apache.kafka.common.serialization.StringSerializer
 %test.mp.messaging.outgoing.orders.topic=orders
 ```
+
+## Testing with the QuarkusTestResourceLifecycleManager
 
 Create a class QuarkusTestResource class to start Kafka before our JUnit test runs:
 
@@ -123,3 +129,78 @@ public class FavFoodOrderTest {
 
 ### Run the test
 
+## Create a Kafka service:
+
+```java
+package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
+
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+import java.util.concurrent.CompletableFuture;
+
+@ApplicationScoped
+public class KafkaService {
+
+    Logger logger = LoggerFactory.getLogger(KafkaService.class);
+
+    Jsonb jsonb = JsonbBuilder.create();
+
+    @Inject
+    @Channel("orders")
+    Emitter<String> ordersEmitter;
+
+    public CompletableFuture<Void> placeOrders(OrderInCommand orderInCommand) {
+
+        logger.debug("sending {}", orderInCommand);
+        return ordersEmitter.send(jsonb.toJson(orderInCommand)).toCompletableFuture();
+    }
+}
+```
+
+### Wire our KafkaService into our REST endpoint
+
+```java
+package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
+
+import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrderHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+
+@Path("/api")
+public class ApiResource {
+
+    Logger logger = LoggerFactory.getLogger(ApiResource.class);
+
+    @Inject
+    KafkaService kafkaService;
+
+    @POST
+    @Path("/favfood")
+    public Response acceptFavFoodOrder(final FavFoodOrder favFoodOrder) {
+
+        logger.debug("received {}", favFoodOrder);
+
+        OrderInCommand orderInCommand = FavFoodOrderHandler.handleOrder(favFoodOrder);
+
+        logger.debug("sending {}", orderInCommand);
+        kafkaService.placeOrders(orderInCommand);
+
+        return Response.accepted(favFoodOrder).build();
+    }
+}
+```
