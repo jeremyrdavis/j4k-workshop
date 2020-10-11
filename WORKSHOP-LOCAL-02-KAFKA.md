@@ -1,4 +1,4 @@
-# 03: Apache Kafka and Reactive Messaging
+# 02: Apache Kafka and Reactive Messaging
 
 ## Adding Kafka
 
