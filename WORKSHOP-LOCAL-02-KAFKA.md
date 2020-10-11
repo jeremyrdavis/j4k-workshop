@@ -4,16 +4,16 @@
 
 Let's swap out our REST call by directly sending the order to a Kafka Topic
 
-First we need to add SmallRye Reactive Messaging:
+First we need to add SmallRye Reactive Messaging and 2 dependencies that will help us test Kafka:
 
-```shell script
-./mvnw quarkus:add-extension -Dextension=quarkus-smallrye-reactive-messaging-kafka
-```
-
-## Testing Kafka
+## Workin with Kafka
 
 ```xml
 <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+    </dependency>
+ <dependency>
     <groupId>io.quarkus</groupId>
     <artifactId>quarkus-test-common</artifactId>
 </dependency>
