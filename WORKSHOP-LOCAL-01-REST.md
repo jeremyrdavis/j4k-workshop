@@ -54,68 +54,6 @@ You need:
     * https://www.docker.com/products/docker-desktop
     * https://docs.docker.com/engine/install/ubuntu/
 
-## Application Requirements
-
-### Background
-
-Because to go orders have recently taken on a new importance :mask: the Quarkus Coffeeshop business team has recently inked a deal with FavFood Delivery.  FavFood requires us, the Quarkus Coffeeshop dev team, to implement a REST endpoint for them to call with to go orders.
-
-In this workshop we will consume their JSON format, translate it into our expected format, and enter it into the Quarkus Coffeeshop system.  Along the way we will learn how to:
-* Quickly create a Quarkus application
-* About Quarkus extensions
-* Running Quarkus in dev mode (developer joy!)
-* Reactive messaging with SmallRye reactive messaging
-* Making REST calls
-
-### Documentation
-
-FavFood has supplied us with an [OpenApi](https://www.openapis.org/) document describing the service that we need to stand up in order to integrate with them.  Don't worry if you are unfamiliar with the OpenAPI spec, but it is worth checking out after the workshop: [SwaggerIO OpenAPI Specification](https://swagger.io/specification/)
-
-```yaml
----
-openapi: 3.0.1
-info:
-  title: FavFood Delivery Service API
-  version: "1.0"
-paths:
-  /api:
-    post:
-      responses:
-        "202":
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Order'
-components:
-  schemas:
-    Order:
-      type: object
-      properties:
-        customerName:
-          type: string
-        orderId:
-          type: string
-        favFoodLineItems:
-          $ref: '#/components/schemas/ListLineItem'
-    ListLineItem:
-      type: array
-      items:
-        $ref: '#/components/schemas/LineItem'
-    LineItem:
-      type: object
-      properties:
-        item:
-          type: string
-        itemId:
-          type: string
-        quantity:
-          format: int32
-          type: integer
-```
-
-We need to accept an "Order" object with properties, "customerName," "id," and an array "listLineItems" of "LineIem" objects defined.  The "LineItem" contains Strings for "itemId," "item," and an integer "quantity."
-
 ## Creating a Project with https://code.quarkus.io
 
 * Open https://code.quarkus.io
@@ -310,6 +248,67 @@ git commmit -am "Parameterized ExampleResource message"
 ```
 
 ## Starting on Our Application
+
+### Background and Requirements
+
+Because to go orders have recently taken on a new importance :mask: the Quarkus Coffeeshop business team has recently inked a deal with FavFood Delivery.  FavFood requires us, the Quarkus Coffeeshop dev team, to implement a REST endpoint for them to call with to go orders.
+
+In this workshop we will consume their JSON format, translate it into our expected format, and enter it into the Quarkus Coffeeshop system.  Along the way we will learn how to:
+* Quickly create a Quarkus application
+* About Quarkus extensions
+* Running Quarkus in dev mode (developer joy!)
+* Reactive messaging with SmallRye reactive messaging
+* Making REST calls
+
+### Documentation
+
+FavFood has supplied us with an [OpenApi](https://www.openapis.org/) document describing the service that we need to stand up in order to integrate with them.  Don't worry if you are unfamiliar with the OpenAPI spec, but it is worth checking out after the workshop: [SwaggerIO OpenAPI Specification](https://swagger.io/specification/)
+
+```yaml
+---
+openapi: 3.0.1
+info:
+  title: FavFood Delivery Service API
+  version: "1.0"
+paths:
+  /api:
+    post:
+      responses:
+        "202":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Order'
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        customerName:
+          type: string
+        orderId:
+          type: string
+        favFoodLineItems:
+          $ref: '#/components/schemas/ListLineItem'
+    ListLineItem:
+      type: array
+      items:
+        $ref: '#/components/schemas/LineItem'
+    LineItem:
+      type: object
+      properties:
+        item:
+          type: string
+        itemId:
+          type: string
+        quantity:
+          format: int32
+          type: integer
+```
+
+We need to accept an "Order" object with properties, "customerName," "id," and an array "listLineItems" of "LineIem" objects defined.  The "LineItem" contains Strings for "itemId," "item," and an integer "quantity."
+
 
 ### Setting up Logging
 
@@ -1160,7 +1159,7 @@ public class FavFoodOrderHandler {
 ```
 ## Getting the FavFoodOrder into our System
 
-We are going to use Quarkus' REST Client to call an existing endpoint in the web application
+We are going to use Quarkus' Microprofile REST Client to call an existing endpoint in the web application.  This is easy to do.  We simply need to create an interface pointing at the REST endpoint and update our application.properties file with the appropriate URI:
 
 ```java
 package org.j4k.workshops.quarkus.infrastructure;
