@@ -9,10 +9,10 @@ First we need to add SmallRye Reactive Messaging and 2 dependencies that will he
 ## Workin with Kafka
 
 ```xml
-<dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
-    </dependency>
+ <dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+ </dependency>
  <dependency>
     <groupId>io.quarkus</groupId>
     <artifactId>quarkus-test-common</artifactId>
@@ -28,7 +28,6 @@ application.properties:
 
 ```properties
 # Kafka
-# Kafka
 %dev.mp.messaging.outgoing.orders.connector=smallrye-kafka
 %dev.mp.messaging.outgoing.orders.value.serializer=org.apache.kafka.common.serialization.StringSerializer
 %dev.mp.messaging.outgoing.orders.topic=orders
@@ -38,7 +37,33 @@ application.properties:
 %test.mp.messaging.outgoing.orders.topic=orders
 ```
 
-Update our test:
+Create a class QuarkusTestResource class to start Kafka before our JUnit test runs:
+
+```java
+import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
+import org.testcontainers.containers.KafkaContainer;
+
+import java.util.Collections;
+import java.util.Map;
+
+public class KafkaTestResource implements QuarkusTestResourceLifecycleManager {
+
+    private final KafkaContainer kafkaContainer = new KafkaContainer();
+
+    @Override
+    public Map<String, String> start() {
+        kafkaContainer.start();
+        return Collections.singletonMap("kafka.bootstrap.servers", kafkaContainer.getBootstrapServers());
+    }
+
+    @Override
+    public void stop() {
+        kafkaContainer.stop();
+    }
+}
+```
+
+And add the new class to our ApiResourceTest class:
 
 ```java
 @QuarkusTest @QuarkusTestResource(KafkaTestResource.class)
@@ -46,10 +71,6 @@ public class ApiResouceTest {
 
     Logger logger = LoggerFactory.getLogger(ApiResourceTest.class);
 
-/*
-    @InjectMock
-    RESTService restService;
-*/
 ```
 
 ```java
@@ -80,56 +101,25 @@ public class FavFoodOrderTest {
 
     Logger logger = LoggerFactory.getLogger(FavFoodOrderTest.class);
 
-/*
-    @InjectMock
-    RESTService restService;
-*/
-
     @Test
     public void testPlacingOrder() {
 
-        JsonObject mockOrder = mockOrder();
-        System.out.println(mockOrder);
+    final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
+
+    @Test
+    public void tetFavFoodEndpoint(){
 
         given()
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(mockOrder)
                 .when()
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(json)
                 .post("/api/favfood")
                 .then()
-                    .statusCode(202)
-                    .body("orderId", equalTo(mockOrder.getString("orderId")))
-                    .body("customerName", equalTo("Lemmy"));
-
-    }
-
-    private JsonObject mockOrder() {
-
-        return Json.createObjectBuilder()
-                .add("customerName", "Lemmy")
-                .add("orderId", UUID.randomUUID().toString())
-                .add("lineItems", mockLineItems())
-                .build();
-    }
-
-    private JsonArray mockLineItems() {
-
-        final JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-        jsonArrayBuilder.add(mockLineItem());
-        return jsonArrayBuilder.build();
-    }
-
-    private JsonObject mockLineItem() {
-
-        return Json.createObjectBuilder()
-                .add("item", "COFFEE_BLACK")
-                .add("itemId", UUID.randomUUID().toString())
-                .add("quantity", 1).build();
+                .statusCode(202);
     }
 }
 ```
-### Building
 
-./mvnw clean package -Dquarkus.container-image.build=true
-docker build -f src/main/docker/Dockerfile.jvm -t jeremydavis/j4k-workshop .
+### Run the test
+
