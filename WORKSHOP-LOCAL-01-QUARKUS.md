@@ -175,10 +175,10 @@ As an astute developer you will have noticed that the properties are parameteriz
 Now we need to update ExampleResource.java to use the parameter:
 
 ```java
-package org.j4k.workshops.quarkus;
-
+package org.acme.resteasy;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -186,8 +186,6 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/resteasy/hello")
 public class ExampleResource {
-
-
     @ConfigProperty(name="hello.message")
     String helloMessage;
 
