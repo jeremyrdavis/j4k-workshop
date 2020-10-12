@@ -239,3 +239,5 @@ git commmit -am "Parameterized ExampleResource message"
 ```
 
 And that's it for part 1!
+
+In [Step 02](WORKSHOP-LOCAL-02-REST.md) you will integrate a third party API with the existing application using the Microprofile REST Client: [Onward!](WORKSHOP-LOCAL-02-REST.md)
