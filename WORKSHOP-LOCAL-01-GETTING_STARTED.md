@@ -91,11 +91,17 @@ For more on [Quarkus extensions](https://quarkus.io/guides/writing-extensions)
 * Open src/test/java/org/j4k/workshops/quarkus/ExampleResourceTest
 * There are 2 ways to run tests from within VSCode:
 ** Click "Run Test," which can be found under the @Test annotation and above the "ExampleResourceTest" method
-** Open a Terminal from within Visual Studio Code and type the following:
+** Open a Terminal and type the following:
 
 ```shell
 ./mvnw clean test
 ```
+
+There is a terminal located in Visual Studio Code (see screenshot below.)  Make sure you change into the directory of the new project after opening it.
+
+![Test in Visual Studio Code](images/01-05.png)
+![Test in Visual Studio Code Terminal](images/01-06.png)
+
 
 #### Quarkus Tests
 
