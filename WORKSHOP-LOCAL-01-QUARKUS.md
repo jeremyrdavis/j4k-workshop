@@ -163,9 +163,9 @@ Let's parameterize the message by moving it into the application.properties file
 # Configuration file
 # key = value
 
-%dev.hello.message=Hello, J4K 2020!
-%test.hello.message=hello
-hello.message=Hello from Quarkus!
+%dev.hello.message="Hello, J4K 2020!"
+%test.hello.message="hello"
+hello.message="Hello from Quarkus!"
 ```
 
 As an astute developer you will have noticed that the properties are parameterized ("%dev.hello.message".)  You can add "%prod" if you like, but Quarkus will grab the non-parameterized property for prod by default.  
