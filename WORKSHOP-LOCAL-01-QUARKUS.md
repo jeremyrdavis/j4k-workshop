@@ -196,6 +196,7 @@ public class ExampleResource {
     public String hello() {
         return helloMessage;
     }
+}
 ```
 
 Refresh your browser.  You should of course see the new %dev.hello.message.
