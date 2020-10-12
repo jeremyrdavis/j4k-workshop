@@ -109,7 +109,7 @@ There is a terminal located in Visual Studio Code (see screenshot below.)  Make 
 
 You have probably noticed that the test classes are annotated with "@QuarkusTest."  The test spins up an instance of Quarkus, calls the endpoint using rest-assured, and verifies the output using [Rest-Assured](https://rest-assured.io)  
 
- :sunglasses: *DEV TIP:* [Rest-Assured](https://rest-assured.io)  is a *seriously* useful testing library.  If you haven't spent time with it before carve out some cycles to check it out: [https://rest-assured.io](https://rest-assured.io) 
+ :sunglasses: *DEV TIP:* [Rest-Assured](https://rest-assured.io)  is a *seriously* useful testing library.  We are also using the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers, which is also an incredibly useful project.  If you haven't spent time with it before carve out some cycles to check them out: [https://rest-assured.io](https://rest-assured.io) and [Hamcrest](http://hamcrest.org/JavaHamcrest/)
 
 ### Dev Mode
 
