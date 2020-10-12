@@ -100,54 +100,54 @@ quarkus.log.category."org.testcontainers".level=FATAL
 
 ### Test First  and Fail Fast
 
-Let's create a new package, "org.j4k.workshops.quarkus.infrastructure," and a test, "FavFoodResourceTest" for our REST service:
+Let's create a new package, "org.j4k.workshops.quarkus.coffeeshop," and a test, "ApiResourceTest" for our REST service:
 
 ```java
-package org.j4k.workshops.quarkus.infrastructure;
+package org.j4k.workshops.quarkus.coffeeshop;
 
-import java.util.UUID;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.ws.rs.core.MediaType;
-
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.infrastructure.FavFoodOrderRepository;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import javax.ws.rs.core.MediaType;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.equalTo;
 
-@QuarkusTest
-public class FavFoodResourceTest {
+@QuarkusTest @QuarkusTestResource(KafkaTestResource.class)
+public class ApiResourceTest {
+
+    final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
+
+    @InjectMock
+    FavFoodOrderRepository repository;
 
     @Test
-    public void testFavFoodEndpoint() {
-
-        final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
-
+    public void tetFavFoodEndpoint(){
 
         given()
-          .accept(MediaType.APPLICATION_JSON)
-          .contentType(MediaType.APPLICATION_JSON)
-          .body(json)
-          .when()
-          .post("/FavFood")
-          .then()
-             .statusCode(202)
-             .body("orderId", equalTo(order.getString("orderId")))
-             .body("customerName", equalTo("Lemmy"));
-    }
+                .when()
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(json)
+                .post("/api/favfood")
+                .then()
+                .statusCode(202);
+
+    };
+
 
 }
-```
+```  
+
 #### Rest Assured Test
 
-[Rest Assured](https://rest-assured.io/) is a great testing tool.  It is included with the RESTEasy extension.  We are also going to use the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshop authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
+[Rest Assured](https://rest-assured.io/) is a great testing tool, which is why Quarkus includes it with the [RESTEasy](https://resteasy.github.io/) extension.  
 
+:nerd_face: *TRIVIA* [RESTEasy](https://resteasy.github.io/) is one of the oldest Java REST frameworks
+
+:sunglasses: *DEV TIP:* We are also using the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshop authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
 
 The Rest-Assured part of our test is:
 
@@ -176,7 +176,7 @@ Most of it is similar to our earlier test.  The differences are that we have add
 
 Run the test.  It should of course fail because we haven't implemented our endpoint yet.
 
-*IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshops authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute Lemmy for a customer of your choosing.
+:guitar: *IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshop authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute a musician of your choosing.
 
 ### Implement Our Endpoint
 
