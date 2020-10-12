@@ -164,7 +164,7 @@ Let's parameterize the message by moving it into the application.properties file
 # key = value
 
 %dev.hello.message="Hello, J4K 2020!"
-%test.hello.message="hello"
+%test.hello.message=hello
 hello.message="Hello from Quarkus!"
 ```
 
@@ -202,15 +202,14 @@ Refresh your browser.  You should of course see the new %dev.hello.message.
 Re-run the test, and this time you should pass.  You can also parameterize the ExampleResourceTest.java:
 
 ```java
-package org.j4k.workshops.quarkus;
+package org.acme.resteasy;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-
-import javax.resource.spi.ConfigProperty;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @QuarkusTest
 public class ExampleResourceTest {
@@ -234,7 +233,7 @@ public class ExampleResourceTest {
 You can commit the changes to github if you want:
 
 ```shell script
-git commmit -am "Parameterized ExampleResource message"
+git commit -am "Parameterized ExampleResource message"
 ```
 
 And that's it for part 1!
