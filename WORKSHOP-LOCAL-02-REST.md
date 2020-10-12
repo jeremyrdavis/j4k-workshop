@@ -1,4 +1,6 @@
-# Event Driven Architecture with Quarkus, Kafka, and Kubernetets (Local Development)
+**Event Driven Architecture with Quarkus, Kafka, and Kubernetets**  
+
+# Step 2 - Integration with the Microprofile REST Client
 
 In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
 
@@ -13,7 +15,6 @@ In this workshop you will build a microservice to integrate the existing Quarkus
 1. Getting the FavFood Order into Our Format
     1. Our Domain
     1. @RegisterForReflection    
-
 
 
 ## Starting on Our Application
@@ -963,5 +964,10 @@ Update the application.properties to contain:
 %dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 %test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 %prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-```
+```  
 
+If you haven't heard of Microprofile, you can check it out here: https://microprofile.io/
+
+And that's it for part 2!
+
+In [Step 03](WORKSHOP-LOCAL-03-KAFKA.md) you will swap out the REST Client for Kafka: [Onward!](WORKSHOP-LOCAL-03-KAFKA.md)
