@@ -1,5 +1,7 @@
 # Event Driven Architecture with Quarkus, Kafka, and Kubernetets
 
+*Don't hesitate to ask questions!*
+
 ## Table of Contents
 
 1. Your Presenters
@@ -10,17 +12,15 @@
 
 Your presenters are:
 
-Jeremy Davis
-Chief Architect, Red Hat
-@argntprgrmr
+**Jeremy Davis**  
+Chief Architect, Red Hat  
+@argntprgrmr  
 https://www.linkedin.com/in/jeremyrdavis/
 
-Tosin Akinosho
-Specialist Solutions Architect, Red Hat
-@tech0827
+**Tosin Akinosho**  
+Specialist Solutions Architect, Red Hat  
+@tech0827  
 https://www.linkedin.com/in/tosinakinosho/
-
-Don't hesitate to ask questions!
 
 ## Workshop Overview
 
