@@ -152,11 +152,6 @@ public class ApiResourceTest {
 The Rest-Assured part of our test is:
 
 ```java
-    @Test
-    public void testFavFoodEndpoint() {
-
-        final JsonObject order = mockOrder();
-
         given()
           .accept(MediaType.APPLICATION_JSON)
           .contentType(MediaType.APPLICATION_JSON)
@@ -165,9 +160,8 @@ The Rest-Assured part of our test is:
           .post("/FavFood")
           .then()
              .statusCode(202)
-             .body("orderId", equalTo(order.getString("orderId")))
+             .body("orderId", equalTo("cdc07f8d-698e-43d9-8cd7-095dccace575"))
              .body("customerName", equalTo("Lemmy"));
-    }
 ```
 
 Most of it is similar to our earlier test.  The differences are that we have added header information and a body to the POST request.
@@ -180,7 +174,7 @@ Run the test.  It should of course fail because we haven't implemented our endpo
 
 ### Implement Our Endpoint
 
-Create the "infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.infrastructure.ApiResource" with the following content:
+Create the "org.j4k.workshops.quarkus.coffeeshop.infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.coffeeshop.infrastructure.ApiResource" with the following content:
 
 ```java
 package org.j4k.workshops.quarkus.infrastructure;
@@ -202,13 +196,13 @@ public class ApiResource {
 }
 ```
 
-Our class won't compile of course because FavFoodOrder doesn't exist.
+Our class won't compile of course because FavFoodOrder doesn't exist.  Your humble workshop authors prefer to code the desired functionality and fill in the blanks with the missing code.  Not everybody enjoys this approach, and you could certainly start by creating the model.  We'll do that in the next step.
 
 ### Create the FavFood domain model
 
 #### FavFoodOrder
 
-Create a package for our FavFood domain objects in "src/main/org/j4k/workshops/quarkus/favfood/domain."
+Create a package for our FavFood domain objects in "org.j4k.workshops.quarkus.coffeeshop.favfood.domain"
 
 Create a class, "FavFoodOrder," in the package:
 
