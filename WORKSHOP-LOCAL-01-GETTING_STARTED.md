@@ -88,26 +88,30 @@ For more on [Quarkus extensions](https://quarkus.io/guides/writing-extensions)
 
 #### Testing Quarkus Applications
 
-* Open src/test/java/org/j4k/workshops/quarkus/ExampleResourceTest
-* There are 2 ways to run tests from within VSCode:
-** Click "Run Test," which can be found under the @Test annotation and above the "ExampleResourceTest" method
-** Open a Terminal and type the following:
+* Open src/test/java/org/j4k/workshops/quarkus/ExampleResourceTest  
+* There are 2 ways to run tests from within VSCode:  
+** Click "Run Test," which can be found under the @Test annotation and above the "ExampleResourceTest" method  
+
+![Test in Visual Studio Code](images/01-05.png)  
+
+** Open a Terminal and type the following:  
 
 ```shell
 ./mvnw clean test
-```
+```  
 
-There is a terminal located in Visual Studio Code (see screenshot below.)  Make sure you change into the directory of the new project after opening it.
+There is a terminal located in Visual Studio Code (see screenshot below.)  Make sure you change into the directory of the new project after opening it.  
 
-![Test in Visual Studio Code](images/01-05.png)
 ![Test in Visual Studio Code Terminal](images/01-06.png)
 
 
 #### Quarkus Tests
 
-You have probably noticed that the test classes are annotated with "@QuarkusTest."  The test spins up a version of Quarkus, calls the endpoint using rest-assured, and verifies the output using [Rest-Assured](https://rest-assured.io)
+You have probably noticed that the test classes are annotated with "@QuarkusTest."  The test spins up an instance of Quarkus, calls the endpoint using rest-assured, and verifies the output using [Rest-Assured](https://rest-assured.io)  
 
-#### Dev Mode
+ :sunglasses: *DEV TIP:* [Rest-Assured](https://rest-assured.io)  is a *seriously* useful testing library.  If you haven't spent time with it before carve out some cycles to check it out: [https://rest-assured.io](https://rest-assured.io) 
+
+### Dev Mode
 
 "quarkus:dev runs Quarkus in development mode. This enables hot deployment with background compilation, which means that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource files like the configuration property file. 
 
@@ -129,7 +133,8 @@ Start Quarkus in dev mode from the Terminal in VS Code or from a terminal window
 
 ./mvnw clean compile quarkus:dev
 
-```
+```  
+
 Open http://localhost:8080 and http://localhost:8080/resteasy/hello
 
 ##### Live changes
