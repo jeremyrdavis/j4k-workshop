@@ -1,22 +1,14 @@
-# Event Driven Architecture with Quarkus, Kafka, and Kubernetets (Local Development)
+**Event Driven Architecture with Quarkus, Kafka, and Kubernetets**  
+
+# Step 2 - Integration with the Microprofile REST Client
 
 In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
 
 ## Table of Contents
 
-1. Pre-requisites
-1. Application Requirements (what you're going to build)
-	1. Background
-	1. Documentation
-1. Creating a project at https://code.quarkus.io
-1. Importing the project into Visual Studio Code
-1. Getting Started with the project
-	1. Importing the project into Visual Studio Code
-	1. Testing Quarkus applications
-1. Quarkus dev mode
-    1. Live changes
-    1. Configuration and Parameterizing the Greeting Message
 1. Starting on Our Application
+    1. Background and Requirements
+    1. Setting up Logging
     1. Test First and Fail Fast
     1. Implement Our Endpoint
     1. The FavFood Domain Model
@@ -25,25 +17,11 @@ In this workshop you will build a microservice to integrate the existing Quarkus
     1. @RegisterForReflection    
 
 
+## Starting on Our Application
 
-## Pre-requisites
+### Background and Requirements
 
-You need:
-* a JDK installed on your machine (the workshop was developed with 11)
-    * [Adopt OpenJDK](https://adoptopenjdk.net/) is an easy way to get started with OpenJDK
-    * [Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) the official, Oracle version
-* a Github account
-    * [Github](https://github.com/)
-* an IDE (although the workshop authors use IntelliJ, and it will have to be pried from our cold, dead fingers, the examples all use Visual Studio Code, which is a pretty great IDE)
-    * [Visual Studio Code](https://code.visualstudio.com/)
-        * Be sure to install the Java and Quarkus tools for VS Code: (https://code.visualstudio.com/docs/languages/java)
-    * [IntelliJ](https://www.jetbrains.com/idea/)
-    * [Eclipse](https://www.eclipse.org/)
-    * [Netbeans](https://netbeans.org/)
-
-## Application Requirements
-
-### Background
+#### Background
 
 Because to go orders have recently taken on a new importance :mask: the Quarkus Coffeeshop business team has recently inked a deal with FavFood Delivery.  FavFood requires us, the Quarkus Coffeeshop dev team, to implement a REST endpoint for them to call with to go orders.
 
@@ -54,7 +32,7 @@ In this workshop we will consume their JSON format, translate it into our expect
 * Reactive messaging with SmallRye reactive messaging
 * Making REST calls
 
-### Documentation
+#### Requirements
 
 FavFood has supplied us with an [OpenApi](https://www.openapis.org/) document describing the service that we need to stand up in order to integrate with them.  Don't worry if you are unfamiliar with the OpenAPI spec, but it is worth checking out after the workshop: [SwaggerIO OpenAPI Specification](https://swagger.io/specification/)
 
@@ -103,259 +81,77 @@ components:
 
 We need to accept an "Order" object with properties, "customerName," "id," and an array "listLineItems" of "LineIem" objects defined.  The "LineItem" contains Strings for "itemId," "item," and an integer "quantity."
 
-## Creating a Project with https://code.quarkus.io
 
-* Open https://code.quarkus.io
-* In the top left corner set the values for your microservice:
-** org.j4k.workshops.quarkus
-** quarkus-coffeeshop-workshop
-** Maven (Quarkus supports Gradle as well, but this tutorial is built with Maven )
-* From the menu select 
-** RESTEasy JAX-RS
-** RESTEasy JSON-B
-** REST Client JSON-B
-* Click "Generate Your Application" and Push to Github
-* Clone the repository on your filesystem
+### Setting up Logging
 
-*Note:* We have intentionally left out one dependency so that you can add it later with Quarkus' Maven plugin.  This an attempt at forshadowing and is designed to make the workshop more enjoyable 
+Your humble workshop authors hate using System.out.println so we will start by configuring logging.
 
-## Getting Started with Your Project
-
-### Importing the project into Visual Studio Code
-
-* Open Visual Studio Code
-* Open your existing workspace
-* Click, "Git Clone"
-* Enter the URL from your github repo
-
-TODO: Have a workspace ready or add instructions for creating one
-
-#### pom.xml
-
-The selections you made at https://code.quarkus.io are in the pom.xml :
-
-```xml
-  <dependencies>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jsonb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client-jsonb</artifactId>
-    </dependency>
-```
-
-
-For more on [Quarkus extensions](https://quarkus.io/guides/writing-extensions)
-
-
-### Testing Quarkus Applications
-
-* Open src/test/java/org/j4k/workshops/quarkus/ExampleResourceTest
-* There are 2 ways to run tests from within VSCode:
-** Click "Run Test," which can be found under the @Test annotation and above the "ExampleResourceTest" method
-** Open a Terminal from within Visual Studio Code and type the following:
-
-```shell
-./mvnw clean test
-```
-
-### Quarkus Tests
-
-You have probably noticed that the test classes are annotated with "@QuarkusTest."  The test spins up a version of Quarkus, calls the endpoint using rest-assured, and verifies the output using [Rest-Assured](https://rest-assured.io)
-
-### Dev Mode
-
-"quarkus:dev runs Quarkus in development mode. This enables hot deployment with background compilation, which means that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource files like the configuration property file. 
-
-Refreshing the browser triggers a scan of the workspace, and if any changes are detected, the Java files are recompiled and the application is redeployed; your request is then serviced by the redeployed application. If there are any issues with compilation or deployment an error page will let you know.
-
-This will also listen for a debugger on port 5005. If you want to wait for the debugger to attach before running you can pass -Dsuspend on the command line. If you don’t want the debugger at all you can use -Ddebug=false."
-
-https://quarkus.io/guides/getting-started#development-mode
-
-:sunglasses: *Q-TIP* : when running multiple intances of Quarkus locally, which is pretty common in a microservices architecture you can have each one listen for a debugger on different ports.  For example when working the the Quarkus Coffeeshop your humble workshop authors typically assign the ports:
-* web "-Ddebug=5005"
-* core "-Ddebug=5006"
-* barista "-Ddebug=5007"
-
-
-
-Start Quarkus in dev mode from the Terminal in VS Code or from a terminal window on your machine:
-
-```shell
-
-./mvnw clean compile quarkus:dev
-
-```
-Open http://localhost:8080 and http://localhost:8080/resteasy/hello
-
-#### Live changes
-
-Open the ExampleResource class (org.j4k.workshops.quarkus.ExampleResource.java.  This class was generated when we created our application.  It doesn't do much.  We will fix that.
-
-Change the message from "hello" to something more prosaic, like "hello, world!" and save the file.  Now reload your browser.
-
-The change is almost instantaneous.  
-
-Change the message again to something even better, like, "hello, j4k!" and reload your browser.  Play around until you have a hello message you like
-
-Quarkus Code Wisdom: *Coding is mostly trial and error.  The faster your feedback loop the more productive you will be!*
-
-Once you're happy with the message, and your test are passing you can commit your code.  Of course the tests aren't going to pass no that we've changed the message
-
-##### Some More Testing
-
-You can run the test again without stopping Quarkus.  The tests use a different port so you can keep Quarkus runing in dev mode and run tests at the same time so we can fail our test while the app is running
-
-#### Configuration and Parameterizing the Greeting Message
-
-Let's parameterize the message by moving it into the application.properties file found in src/main/resources by adding the following:
+Add the following to your application.properties file:
 
 ```properties
-# Configuration file
-# key = value
-
-%dev.hello.message=Hello, J4K 2020!
-%test.hello.message=hello
-hello.message=Hello from Quarkus!
+# Logging
+#quarkus.log.console.format=%d{HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n
+quarkus.log.console.format=%-5p [%c{2.}] (%t) %s%e%n
+quarkus.log.level=INFO
+quarkus.log.category."org.j4k".level=DEBUG
+quarkus.log.category."org.apache.kafka".level=FATAL
+quarkus.log.category."org.testcontainers".level=FATAL
 ```
-
-As an astute developer you will have noticed that the properties are parameterized ("%dev.hello.message".)  You can add "%prod" if you like, but Quarkus will grab the non-parameterized property for prod by default.  
-
-#### Update ExampleResource
-
-Now we need to update ExampleResource.java to use the parameter:
-
-```java
-package org.j4k.workshops.quarkus;
-
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-@Path("/resteasy/hello")
-public class ExampleResource {
-
-
-    @ConfigProperty(name="hello.message")
-    String helloMessage;
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return helloMessage;
-    }
-```
-
-Refresh your browser.  You should of course see the new %dev.hello.message.
-
-Re-run the test, and this time you should pass.  You can also parameterize the ExampleResourceTest.java:
-
-```java
-package org.j4k.workshops.quarkus;
-
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Test;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-
-import javax.resource.spi.ConfigProperty;
-
-@QuarkusTest
-public class ExampleResourceTest {
-
-    @ConfigProperty(name="hello.message")
-    String helloMessage;
-
-    @Test
-    public void testHelloEndpoint() {
-        given()
-          .when().get("/resteasy/hello")
-          .then()
-             .statusCode(200)
-             .body(is(helloMessage));
-    }
-
-}
-```
-
-
-You can commit the changes to github if you want:
-
-```shell script
-git commmit -am "Parameterized ExampleResource message"
-```
-
-## Starting on Our Application
 
 ### Test First  and Fail Fast
 
-Let's create a new package, "org.j4k.workshops.quarkus.infrastructure," and a test, "FavFoodResourceTest" for our REST service:
+Let's create a new package, "org.j4k.workshops.quarkus.coffeeshop," and a test, "ApiResourceTest" for our REST service:
 
 ```java
-package org.j4k.workshops.quarkus.infrastructure;
+package org.j4k.workshops.quarkus.coffeeshop;
 
-import java.util.UUID;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.ws.rs.core.MediaType;
-
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.infrastructure.FavFoodOrderRepository;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import javax.ws.rs.core.MediaType;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.equalTo;
 
-@QuarkusTest
-public class FavFoodResourceTest {
+@QuarkusTest @QuarkusTestResource(KafkaTestResource.class)
+public class ApiResourceTest {
+
+    final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
+
+    @InjectMock
+    FavFoodOrderRepository repository;
 
     @Test
-    public void testFavFoodEndpoint() {
-
-    final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"lineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
+    public void tetFavFoodEndpoint(){
 
         given()
-          .accept(MediaType.APPLICATION_JSON)
-          .contentType(MediaType.APPLICATION_JSON)
-          .body(json)
-          .when()
-          .post("/FavFood")
-          .then()
-             .statusCode(202)
-             .body("orderId", equalTo(order.getString("orderId")))
-             .body("customerName", equalTo("Lemmy"));
-    }
+                .when()
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(json)
+                .post("/api/favfood")
+                .then()
+                .statusCode(202);
+
+    };
+
 
 }
-```
+```  
+
 #### Rest Assured Test
 
-[Rest Assured](https://rest-assured.io/) is a great testing tool.  It is included with the RESTEasy extension.  We are also going to use the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshop authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
+[Rest Assured](https://rest-assured.io/) is a great testing tool, which is why Quarkus includes it with the [RESTEasy](https://resteasy.github.io/) extension.  
 
+:nerd_face: *TRIVIA* [RESTEasy](https://resteasy.github.io/) is one of the oldest Java REST frameworks
+
+:sunglasses: *DEV TIP:* We are also using the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshop authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
 
 The Rest-Assured part of our test is:
 
 ```java
-    @Test
-    public void testFavFoodEndpoint() {
-
-        final JsonObject order = mockOrder();
-
         given()
           .accept(MediaType.APPLICATION_JSON)
           .contentType(MediaType.APPLICATION_JSON)
@@ -364,9 +160,8 @@ The Rest-Assured part of our test is:
           .post("/FavFood")
           .then()
              .statusCode(202)
-             .body("orderId", equalTo(order.getString("orderId")))
+             .body("orderId", equalTo("cdc07f8d-698e-43d9-8cd7-095dccace575"))
              .body("customerName", equalTo("Lemmy"));
-    }
 ```
 
 Most of it is similar to our earlier test.  The differences are that we have added header information and a body to the POST request.
@@ -375,11 +170,11 @@ Most of it is similar to our earlier test.  The differences are that we have add
 
 Run the test.  It should of course fail because we haven't implemented our endpoint yet.
 
-*IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshops authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute Lemmy for a customer of your choosing.
+:guitar: *IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshop authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute a musician of your choosing.
 
 ### Implement Our Endpoint
 
-Create the "infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.infrastructure.ApiResource" with the following content:
+Create the "org.j4k.workshops.quarkus.coffeeshop.infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.coffeeshop.infrastructure.ApiResource" with the following content:
 
 ```java
 package org.j4k.workshops.quarkus.infrastructure;
@@ -401,13 +196,13 @@ public class ApiResource {
 }
 ```
 
-Our class won't compile of course because FavFoodOrder doesn't exist.
+Our class won't compile of course because FavFoodOrder doesn't exist.  Your humble workshop authors prefer to code the desired functionality and fill in the blanks with the missing code.  Not everybody enjoys this approach, and you could certainly start by creating the model.  We'll do that in the next step.
 
 ### Create the FavFood domain model
 
 #### FavFoodOrder
 
-Create a package for our FavFood domain objects in "src/main/org/j4k/workshops/quarkus/favfood/domain."
+Create a package for our FavFood domain objects in "org.j4k.workshops.quarkus.coffeeshop.favfood.domain"
 
 Create a class, "FavFoodOrder," in the package:
 
@@ -1049,34 +844,40 @@ public class LineItem {
 First let's write a test (this is just testing our business logic so feel free to copy and paste.)  The interesting stuff is next.
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodLineItem;
+import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.domain.LineItem;
+import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
+import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.j4k.workshops.quarkus.domain.*;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FavFoodOrderHandlerTest {
-    
+
 
     @Test
-    public void testFavFoodOrder(){
+    public void testHandleOrder() {
 
         FavFoodOrder favFoodOrder = new FavFoodOrder();
-        favFoodOrder.setCustomerName("Lemmy");
-        favFoodOrder.setFavFoodLineItems(Arrays.asList(new FavFoodLineItem(UUID.randomUUID().toString(), "COFFEE_BLACK", 1)));
-        OrderInCommand expectedOrderInCommand = new OrderInCommand();
-        expectedOrderInCommand.addBeverage(new LineItem("COFFEE_BLACK", "Lemmy"));
+        favFoodOrder.setCustomerName("Spock");
+        favFoodOrder.setOrderId(UUID.randomUUID().toString());
+        favFoodOrder.setFavFoodLineItems(
+                new ArrayList<>(
+                    Arrays.asList(
+                            new FavFoodLineItem("COFFEE_BLACK", UUID.randomUUID().toString(), 1)
+                    )));
 
-        OrderInCommand resultingOrderInCommand = FavFoodOrderHandler.createFromFavFoodOrder(favFoodOrder);
+        OrderInCommand expectedOrderInCommand = FavFoodOrderHandler.handleOrder(favFoodOrder);
 
-        assertEquals(expectedOrderInCommand.getBeverages().size(), resultingOrderInCommand.getBeverages().size());
-        assertEquals(expectedOrderInCommand.getBeverages().get(0).getName(), resultingOrderInCommand.getBeverages().get(0).getName());
-        assertEquals(expectedOrderInCommand.getBeverages().get(0).getItem(), resultingOrderInCommand.getBeverages().get(0).getItem());
-        
+        assertEquals(1, expectedOrderInCommand.getBeverages().size());
+        LineItem beverage = expectedOrderInCommand.getBeverages().get(0);
+        assertEquals("COFFEE_BLACK", beverage.getItem());
     }
 }
 ```
@@ -1088,45 +889,43 @@ We use Object Oriented design principles throughout the application.  When you l
 In this case we will use an anemic domain model and handle the translation with a transaction script.  The OrderInCommand is after all only a command.  Other parts of our system will handle persistence (for now anyway), and so using a transaction script in the favfood package makes sense.
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
+
+import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.domain.LineItem;
+import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.j4k.workshops.quarkus.domain.LineItem;
-import org.j4k.workshops.quarkus.domain.OrderInCommand;
 
 public class FavFoodOrderHandler {
 
     static final Set<String> beverages = new HashSet<>(Arrays.asList("CAPPUCCINO","COFFEE_BLACK","COFFEE_WITH_ROOM","ESPRESSO","ESPRESSO_DOUBLE","LATTE"));
 
     static final Set<String> food = new HashSet<>(Arrays.asList("CAKEPOP","CROISSANT","CROISSANT_CHOCOLATE","MUFFIN"));
-    
-    public static OrderInCommand createFromFavFoodOrder(final FavFoodOrder favFoodOrder){
 
+    public static OrderInCommand handleOrder(final FavFoodOrder favFoodOrder){
         OrderInCommand orderInCommand = new OrderInCommand();
 
         favFoodOrder.getFavFoodLineItems().forEach(favFoodLineItem -> {
             if(beverages.contains(favFoodLineItem.getItem())){
                 for(int i=0;i<favFoodLineItem.getQuantity();i++){
-                    orderInCommand.addBeverage(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));  
+                    orderInCommand.addBeverage(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));
                 }
             }else if(food.contains(favFoodLineItem.getItem())){
                 for(int i=0;i<favFoodLineItem.getQuantity();i++){
-                    orderInCommand.addKitchenOrder(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));  
+                    orderInCommand.addKitchenOrder(new LineItem(favFoodLineItem.getItem(), favFoodOrder.getCustomerName()));
                 }
             }
         });
         return orderInCommand;
     }
-    
-
 }
 ```
 ## Getting the FavFoodOrder into our System
 
-We are going to use Quarkus' REST Client to call an existing endpoint in the web application
+We are going to use Quarkus' Microprofile REST Client to call an existing endpoint in the web application.  This is easy to do.  We simply need to create an interface pointing at the REST endpoint and update our application.properties file with the appropriate URI:
 
 ```java
 package org.j4k.workshops.quarkus.infrastructure;
@@ -1152,12 +951,17 @@ Update the application.properties to contain:
 
 ```properties
 # REST CLIENT
-%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=http://localhost:8080
-%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=http://localhost:8080
-%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=${REST_URL}
+%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
 
 %dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 %test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 %prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-```
+```  
 
+If you haven't heard of Microprofile, you can check it out here: https://microprofile.io/
+
+And that's it for part 2!
+
+In [Step 03](WORKSHOP-LOCAL-03-KAFKA.md) you will swap out the REST Client for Kafka: [Onward!](WORKSHOP-LOCAL-03-KAFKA.md)
