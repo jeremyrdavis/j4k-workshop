@@ -7,6 +7,7 @@
 1. Your Presenters
 1. Workshop Overview (what you're going to build)
 1. Pre-Requisites
+1. Preparing Your Workspace
 
 ## Your Presenters
 
@@ -47,7 +48,7 @@ You need:
     * [Eclipse](https://www.eclipse.org/)
     * [Netbeans](https://netbeans.org/)
 * a REST development tool
-    * [Postman](https://www.postman.com/) is what I use
+    * [Postman](https://www.postman.com/) is favored by your humble workshop authors
     * Browser plugins:
         * Firefox 
 	    * https://addons.mozilla.org/en-US/firefox/addon/rested/
@@ -59,6 +60,11 @@ You need:
 * Docker (for the Kafka and MongoDB steps)
     * https://www.docker.com/products/docker-desktop
     * https://docs.docker.com/engine/install/ubuntu/
+
+## Preparing Your Workspace
+
+1. Create a folder for your work, i.e. "/Users/<<YOUR NAME>>/J4k" or "C:\\J4K"
+1. Clone the solution in this folder: https://github.com/jeremyrdavis/j4k-workshop-solution.git
 
 ### Deploy Workshop on OpenShift
 * [j4k workshop OpenShift deployment](workshop-quickstart.md)
