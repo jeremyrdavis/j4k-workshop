@@ -52,14 +52,15 @@ In this workshop we will consume their JSON format, translate it into our expect
 
 If you followed the getting started recommendations on the [front page](README.md) you have a folder named "J4K" with the workshop solution already in it.  Clone your new application into the same directory so that you can easily refer to the solution.
 
+![Work Directory](images/01-04.png)
+![Visual Studio Code](images/01-03.png)
+
 *NOTE* Feel free to use any IDE that you like!  Your humble workshop authors favor IntelliJ Idea, but we have used Visual Studio Code for the screenshots and instructions because it is nice, free, and our Red Hat colleagues wrote the Java integration
 
 * Open Visual Studio Code
 * Open your existing workspace
 * Click, "Git Clone"
 * Enter the URL from your github repo
-
-TODO: Have a workspace ready or add instructions for creating one
 
 ##### pom.xml
 
