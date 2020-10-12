@@ -1,47 +1,30 @@
 # Event Driven Architecture with Quarkus, Kafka, and Kubernetets
 
-## Table of Contents
+## Welcome to the Workshop
 
-1. Creating a Project with https://code.quarkus.io
-2. Code Ready Workspaces
-3. Getting Started with Your Project
+Your presenters are:
 
-## Creating a Project with https://code.quarkus.io
+Jeremy Davis
+Chief Architect, Red Hat
+@argntprgrmr
+https://www.linkedin.com/in/jeremyrdavis/
 
-* Open https://code.quarkus.io
-* In the top left corner set the values for your microservice:
-** org.j4k.tutorial.quarkus
-** quarkus-cafe-tutorial
-** Maven (Quarkus supports Gradle as well, but this tutorial is built with Maven )
-* From the menu select 
-** "RESTEasy JSON-B"
-** "Hibernate ORM with Panache" 
-** "JDBC Driver - PostgreSQL" 
-** "JDBC Driver - H2"
-** "SmallRye Reactive Messaging"
-* Click "Generate Your Application" and Push to Github
+Tosin Akinosho
+Specialist Solutions Architect, Red Hat
+@tech0827
+https://www.linkedin.com/in/tosinakinosho/
 
-## Code Ready Workspaces
+Don't hesitate to ask questions!
 
-* Open Code Ready Workspaces and login with your username and password
-* Open your existing workspace
-* Click, "Git Clone"
-* Enter the URL from your github repo
+## Workshop Overview
 
-TODO: Have a workspace ready or add instructions for creating one
+The workshop is based around the Quarkus Coffeeeshop.  In the workshop you will create a microservice that integrates with a delivery provider.  You will leverage Microprofile's REST Client, Microprofile Reactive Messaging for Kafka integration, and Hibernate Panache for persisting records to MongoDB
 
-## Getting Started with Your Project
-
-### pom.xml
-
-The selections you made are in the pom.xml  
-
-**TODO:** 
- - Quarkus modules
-
-### Testing Quarkus Applications
-
-* Open src/test/java/org/acme/ExampleResourceTest
+[Getting Started](workshop-quickstart.md)
+[Step One: Introducing Quarkus](WORKSHOP-LOCAL-01-GETTING_STARTED.md)
+[Step Two: Using Quarkus' REST Client](WORKSHOP-LOCAL-02-REST.md)
+[Step Three: Leveraging Kafka with Microprofile Reactive Messaging](WORKSHOP-LOCAL-03-KAFKA.md)
+[Step Four: Persistance with Hibernate Panache](WORKSHOP-LOCAL-04-MONGODB.md)
  
 ### Deploy Workshop on OpenShift
 * [j4k workshop OpenShift deployment](workshop-quickstart.md)
