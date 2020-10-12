@@ -1,4 +1,6 @@
-# Event Driven Architecture with Quarkus, Kafka, and Kubernetets Step 1 - Getting Started with Quarkus
+**Event Driven Architecture with Quarkus, Kafka, and Kubernetets**  
+
+# Step 1 - Getting Started with Quarkus
 
 In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
 
