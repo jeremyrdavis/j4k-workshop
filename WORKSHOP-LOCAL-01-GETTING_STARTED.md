@@ -1,10 +1,9 @@
-# Event Driven Architecture with Quarkus, Kafka, and Kubernetets (Local Development)
+# Event Driven Architecture with Quarkus, Kafka, and Kubernetets Step 1 - Getting Started with Quarkus
 
 In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
 
 ## Table of Contents
 
-1. Pre-requisites
 1. Workshop Overview (what you're going to build)
 1. Getting Started with Quarkus
 	1. Creating a project at https://code.quarkus.io
@@ -15,34 +14,6 @@ In this workshop you will build a microservice to integrate the existing Quarkus
 	1. Quarkus dev mode
     	1. Live changes
     	1. Configuration and Parameterizing the Greeting Message
-
-## Pre-requisites
-
-You need:
-* a JDK installed on your machine (the workshop was developed with 11)
-    * [Adopt OpenJDK](https://adoptopenjdk.net/) is an easy way to get started with OpenJDK
-    * [Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) the official, Oracle version
-* a Github account
-    * [Github](https://github.com/)
-* an IDE (although the workshop authors use IntelliJ, and it will have to be pried from our cold, dead fingers, the examples all use Visual Studio Code, which is a pretty great IDE)
-    * [Visual Studio Code](https://code.visualstudio.com/)
-        * Be sure to install the Java and Quarkus tools for VS Code: (https://code.visualstudio.com/docs/languages/java)
-    * [IntelliJ](https://www.jetbrains.com/idea/)
-    * [Eclipse](https://www.eclipse.org/)
-    * [Netbeans](https://netbeans.org/)
-* a REST development tool
-    * [Postman](https://www.postman.com/) is what I use
-    * Browser plugins:
-        * Firefox 
-	    * https://addons.mozilla.org/en-US/firefox/addon/rested/
-	    * https://addons.mozilla.org/en-US/firefox/addon/restclient/
-	    * https://addons.mozilla.org/en-US/firefox/addon/rester/
-        * Chrome
-	    * https://chrome.google.com/webstore/detail/advanced-rest-client/
-	    * https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm?hl=en
-* Docker (for the Kafka and MongoDB steps)
-    * https://www.docker.com/products/docker-desktop
-    * https://docs.docker.com/engine/install/ubuntu/
 
 ## Workshop Overview
 
@@ -72,11 +43,12 @@ In this workshop we will consume their JSON format, translate it into our expect
 * Click "Generate Your Application" and Push to Github
 * Clone the repository on your filesystem
 
-*Note:* We have intentionally left out one dependency so that you can add it later with Quarkus' Maven plugin.  This an attempt at forshadowing and is designed to make the workshop more enjoyable 
-
-### Getting Started with Your Project
+![code.quarkus.io](images/01-01.png)
+![code.quarkus.io](images/01-02.png)
 
 #### Importing the project into Visual Studio Code
+
+*NOTE* Feel free to use any IDE that you like!  Your humble workshop authors favor IntelliJ Idea, but we have used Visual Studio Code for the screenshots and instructions because it is nice, free, and our Red Hat colleagues wrote the Java integration
 
 * Open Visual Studio Code
 * Open your existing workspace
