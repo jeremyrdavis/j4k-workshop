@@ -128,6 +128,10 @@ The idea behind this structure is to segment class files based on application re
 
 @argntprgrmr  
 @tech0827  
+
+And include @j4k and @quarkusio
+
+While we are on the topic of Twitter handles the guys who are on the Quarkus Coffeeshop website are:
 @clementplop 
 @emmanuelbernard  
 @jtgreene  
@@ -135,9 +139,7 @@ The idea behind this structure is to segment class files based on application re
 @maxandersen   
 @nmcl  
 
-And include @j4k and @quarkusio
-
-To be transparent only @argntprgrmr and @tech0827 are responsible for the workshop.  The other guys faces are on the Quarkus Coffeeshop website.  They are responsible for Quarkus
+They are responsible for Quarkus.  @argntprgrmr and @tech0827 are responsible for the workshop.  
 
 ### Test First  and Fail Fast
 
