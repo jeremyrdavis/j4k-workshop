@@ -227,8 +227,8 @@ public class FavFoodOrder {
     public FavFoodOrder(){
 
     }
-
-}```
+}
+```  
 
 Use your IDE to generate equals(), hashCode(), toString(), and getters and setters.  In Visual Studio Code you can right-click on the class, choose "Source Action," and you will get a menu with the options.
 
