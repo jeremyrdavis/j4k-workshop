@@ -15,12 +15,21 @@ If you have cloned the "j4k-workshop-solution" project you can check a tag that 
 git checkout step-02
 
 ```
+You may not have "step-02" on your machine.  If you don't run the following to check out all of the tags:
+
+```shellscript
+
+git fetch --all --tags
+
+```
+
+Then checkout step-02.
 
 ![Checkout Solution Tag](images/03-01.png)
 
 ### Kakfa Topics
 
-:sunglasses" *Kafka Topics in an Event Driven Architecture Tip:* Keep related events in the same topic.  We have multiple topics in the application, which is really easy and incurs essentially no performance hit with Kafka.  However, we send all order related events to the the "orders" topic.  This makes it easy to reconstruct our timeline ~~if~~ when we need to debug or replay events in the future.
+:sunglasses: *Kafka Topics in an Event Driven Architecture Tip:* Keep related events in the same topic.  We have multiple topics in the application, which is really easy and incurs essentially no performance hit with Kafka.  However, we send all order related events to the the "orders" topic.  This makes it easy to reconstruct our timeline ~~if~~ when we need to debug or replay events in the future.
 
 ### SmallRye Reactive Messaging
 
