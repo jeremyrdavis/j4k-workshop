@@ -6,7 +6,7 @@
 
 NOTE: For the next sections you will need Docker and Docker Compose to run Kafka and MongoDB
 
-Create a Docker Compose file named, "j4k-docker-compose.yaml" with the following contents (it doesn't have to be in your working directory):
+Create a Docker Compose file named, "docker-compose.yaml" with the following contents (it doesn't have to be in your working directory):
 
 ```yaml
 version: '3'
