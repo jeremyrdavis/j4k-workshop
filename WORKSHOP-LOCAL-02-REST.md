@@ -419,7 +419,7 @@ public class FavFoodLineItem {
 
     int quantity;
 
-    public LineItem(){
+    public FavFoodLineItem(){
 
     }
 
