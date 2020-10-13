@@ -28,7 +28,7 @@ https://www.linkedin.com/in/tosinakinosho/
 The workshop is based around the Quarkus Coffeeeshop.  In the workshop you will create a microservice that integrates with a delivery provider.  You will leverage Microprofile's REST Client, Microprofile Reactive Messaging for Kafka integration, and Hibernate Panache for persisting records to MongoDB
 
 * [Getting Started](workshop-quickstart.md)
-* [Step One: Introducing Quarkus](WORKSHOP-LOCAL-01-GETTING_STARTED.md)
+* [Step One: Introducing Quarkus](WORKSHOP-LOCAL-01-QUARKUS.md)
 * [Step Two: Using Quarkus' REST Client](WORKSHOP-LOCAL-02-REST.md)
 * [Step Three: Leveraging Kafka with Microprofile Reactive Messaging](WORKSHOP-LOCAL-03-KAFKA.md)
 * [Step Four: Persistance with Hibernate Panache](WORKSHOP-LOCAL-04-MONGODB.md)
