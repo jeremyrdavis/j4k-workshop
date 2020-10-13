@@ -942,7 +942,6 @@ In this case we will use an anemic domain model and handle the translation with 
 ```java
 package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
-import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
 import org.j4k.workshops.quarkus.coffeeshop.domain.LineItem;
 import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 
@@ -974,15 +973,15 @@ public class FavFoodOrderHandler {
     }
 }
 ```
-## Getting the FavFoodOrder into our System
+## Getting the FavFoodOrder into the Coffeeshop System
 
 We are going to use Quarkus' Microprofile REST Client to call an existing endpoint in the web application.  This is easy to do.  We simply need to create an interface pointing at the REST endpoint and update our application.properties file with the appropriate URI:
 
 ```java
-package org.j4k.workshops.quarkus.infrastructure;
+package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.j4k.workshops.quarkus.domain.OrderInCommand;
+import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -1002,17 +1001,22 @@ Update the application.properties to contain:
 
 ```properties
 # REST CLIENT
-%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
-%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
-%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%dev.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%test.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%prod.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
 
-%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%dev.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%test.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%prod.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 ```  
+
+And that's it for part 2!
+
+## Microprofile 
 
 If you haven't heard of Microprofile, you can check it out here: https://microprofile.io/
 
-And that's it for part 2!
+![SmallRye](https://smallrye.io/) is Red Hat's implementation of the Microprofile spec.  Ken Finnigan, @kenfinnigan, leads SmallRye, and used to lead WildFly-Swarm and Thorntail (which were pre-cursors to Quarkus.)  SmallRye is also the parent project for Red Hat's implementation of Microprofile Reactive Messaging, which is up next.
+
 
 In [Step 03](WORKSHOP-LOCAL-03-KAFKA.md) you will swap out the REST Client for Kafka: [Onward!](WORKSHOP-LOCAL-03-KAFKA.md)
