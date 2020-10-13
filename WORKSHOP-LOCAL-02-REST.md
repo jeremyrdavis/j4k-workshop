@@ -4,6 +4,14 @@
 
 In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
 
+If you have cloned the "j4k-workshop-solution" project you can check a tag that corresponds to this step with the following command:
+
+```shellscript
+
+git checkout step-01
+
+```
+
 ## Table of Contents
 
 1. Starting on Our Application
@@ -235,7 +243,7 @@ Use your IDE to generate equals(), hashCode(), toString(), and getters and sette
 The whole class is below for reference:
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 import java.util.List;
 
