@@ -12,6 +12,8 @@ git checkout step-01
 
 ```
 
+![Checkout Solution Tag](images/02-03.png)
+
 ## Table of Contents
 
 1. Starting on Our Application
