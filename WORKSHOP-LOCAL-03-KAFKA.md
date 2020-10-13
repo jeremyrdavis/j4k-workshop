@@ -66,11 +66,38 @@ application.properties:
 %test.mp.messaging.outgoing.orders.topic=orders
 ```
 
+Also, be sure to get rid of the REST Client configuration in your application.properties file.  The updated file should look like:
+
+```properties
+# Logging
+#quarkus.log.console.format=%d{HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n
+quarkus.log.console.format=%-5p [%c{2.}] (%t) %s%e%n
+quarkus.log.level=INFO
+quarkus.log.category."org.j4k".level=DEBUG
+quarkus.log.category."org.apache.kafka".level=FATAL
+quarkus.log.category."org.testcontainers".level=FATAL
+
+# Kafka
+%dev.mp.messaging.outgoing.orders.connector=smallrye-kafka
+%dev.mp.messaging.outgoing.orders.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+%dev.mp.messaging.outgoing.orders.topic=orders
+
+%test.mp.messaging.outgoing.orders.connector=smallrye-kafka
+%test.mp.messaging.outgoing.orders.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+%test.mp.messaging.outgoing.orders.topic=orders
+```
+
 ## Testing with the QuarkusTestResourceLifecycleManager
 
-Create a class QuarkusTestResource class to start Kafka before our JUnit test runs:
+We've already covered the @QuarkusTest annotation, but just to recap: QuarkusTest spins up an instance of Quarkus (politely using port 8081 for the web.)
+
+QuarkusTestResourceLifecycleManager is a commonly used helper class that spins up external dependencies (like Kafka) for use in integration tests.
+
+We are going to create a class that implements QuarkusTestResourceLifecycleManager to spin up Kafka.  Create a class KafkaTestResource in the "org/j4k/workshops/quarkus/coffeeshop/infrastructure" package:
 
 ```java
+package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
+
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.testcontainers.containers.KafkaContainer;
 

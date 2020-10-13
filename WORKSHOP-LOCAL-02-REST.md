@@ -921,7 +921,7 @@ public class FavFoodOrderHandlerTest {
         favFoodOrder.setFavFoodLineItems(
                 new ArrayList<>(
                     Arrays.asList(
-                            new FavFoodLineItem("COFFEE_BLACK", UUID.randomUUID().toString(), 1)
+                            new FavFoodLineItem(UUID.randomUUID().toString(), "COFFEE_BLACK",  1)
                     )));
 
         OrderInCommand expectedOrderInCommand = FavFoodOrderHandler.handleOrder(favFoodOrder);
@@ -980,20 +980,20 @@ We are going to use Quarkus' Microprofile REST Client to call an existing endpoi
 ```java
 package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
 
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
-
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import java.util.concurrent.CompletionStage;
 
-@Path("/order")
-@RegisterRestClient
-public interface RESTService {
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrder;
+
+@Path("/api")
+public class ApiResource {
 
     @POST
-    CompletionStage<Response> placeOrders(OrderInCommand createOrderCommand);
+	@Path("/favfood")
+    public Response placeOrder(final FavFoodOrder favFoodOrder){
+        return Response.accepted().entity(favFoodOrder).build();
+    }
 }
 ```
 
