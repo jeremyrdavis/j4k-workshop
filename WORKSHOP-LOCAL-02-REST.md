@@ -122,17 +122,20 @@ We are naming our packages like so:
 
 We are following this convention because it is recommended by Eric Evans in _Domain Driven Design_ which is a fantastic book, and particularly relevant for both microservices architectures and event driven architectures.  Your humble workshop authors cannot recommend it highly enough!
 
-:sunglasses" *Reading List Tip:* Tweet us to let us know you attended the workshop and we might send you a copy.  Our Twitter handles are:
+The idea behind this structure is to segment class files based on application responsibility rather than technichal function.  So we avoid packages like, "org/j4k/workshops/quarkus/coffeeshops/rest" or "org/j4k/workshops/quarkus/coffeeshops/persistence."
 
-@j4k  
+:sunglasses: *Reading List Tip:* Tweet us to let us know you attended the workshop and we might send you a copy of _Domain Driven Design_.  Our Twitter handles are:
+
 @argntprgrmr  
 @tech0827  
-@nmcl  
-@kenfinnigan  
+@clementplop 
 @emmanuelbernard  
 @jtgreene  
-@clementplop 
+@kenfinnigan  
 @maxandersen   
+@nmcl  
+
+And include @j4k and @quarkusio
 
 To be transparent only @argntprgrmr and @tech0827 are responsible for the workshop.  The other guys faces are on the Quarkus Coffeeshop website.  They are responsible for Quarkus
 
