@@ -532,9 +532,7 @@ The use of @RegisterForReflection, however, is an important Quarkus concept.  Qu
 
 ![Quarkus Guide for Writing Native Applications](https://quarkus.io/guides/writing-native-applications-tips)  
 
-The following article from Mark Little, Red Hat VP of Engineering and JBoss Middleware CTO, and @nmcl on Twitter, explains why you might want to compile to a native binary:
-
-![Red Hat Developers Article](https://developers.redhat.com/blog/2019/03/29/quarkus-why-compile-to-native/)
+The following article from Mark Little, Red Hat VP of Engineering and JBoss Middleware CTO, and @nmcl on Twitter, explains why you might want to compile to a native binary: ![Red Hat Developers Article](https://developers.redhat.com/blog/2019/03/29/quarkus-why-compile-to-native/)
 
 
 #### Commit!
@@ -750,7 +748,7 @@ public class OrderInCommand {
 #### LineItem
 
 ```java
-package org.j4k.workshops.quarkus.domain;
+package org.j4k.workshops.quarkus.coffeeshop.domain;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
