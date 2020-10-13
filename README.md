@@ -23,6 +23,10 @@ Specialist Solutions Architect, Red Hat
 @tech0827  
 https://www.linkedin.com/in/tosinakinosho/
 
+## J4K Workshop Link
+
+https://etherpad-j4k-etherpad.apps.cluster-82f5.82f5.example.opentlc.com/p/J4K_Workshop#
+
 ## Workshop Overview
 
 The workshop is based around the Quarkus Coffeeeshop.  In the workshop you will create a microservice that integrates with a delivery provider.  You will leverage Microprofile's REST Client, Microprofile Reactive Messaging for Kafka integration, and Hibernate Panache for persisting records to MongoDB
