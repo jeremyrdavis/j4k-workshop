@@ -409,7 +409,7 @@ public class FavFoodLineItem {
 Repeat the code generation steps above for getters and settes, hashCode(), equals(), and toString() so that you have a class like:
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 public class FavFoodLineItem {
 
