@@ -1,4 +1,6 @@
-# 03: Persistence with Hibernate Panache and MogoDB
+**Event Driven Architecture with Quarkus, Kafka, and Kubernetets**  
+
+# Step 3 - Persistence with Hibernate Panache and MogoDB
 
 ## MongoDB with Hibernate Panache and Kafka with Microprofile Reactive Messaging
 
