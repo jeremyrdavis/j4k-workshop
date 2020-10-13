@@ -12,6 +12,8 @@ git checkout step-03
 
 ```
 
+Yes, the tag is "step-03," and this is Step 4.
+
 ![Checkout Solution Tag](images/04-01.png)
 
 

@@ -163,9 +163,9 @@ Let's parameterize the message by moving it into the application.properties file
 # Configuration file
 # key = value
 
-%dev.hello.message=Hello, J4K 2020!
+%dev.hello.message="Hello, J4K 2020!"
 %test.hello.message=hello
-hello.message=Hello from Quarkus!
+hello.message="Hello from Quarkus!"
 ```
 
 As an astute developer you will have noticed that the properties are parameterized ("%dev.hello.message".)  You can add "%prod" if you like, but Quarkus will grab the non-parameterized property for prod by default.  
@@ -175,10 +175,10 @@ As an astute developer you will have noticed that the properties are parameteriz
 Now we need to update ExampleResource.java to use the parameter:
 
 ```java
-package org.j4k.workshops.quarkus;
-
+package org.acme.resteasy;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -186,8 +186,6 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/resteasy/hello")
 public class ExampleResource {
-
-
     @ConfigProperty(name="hello.message")
     String helloMessage;
 
@@ -196,6 +194,7 @@ public class ExampleResource {
     public String hello() {
         return helloMessage;
     }
+}
 ```
 
 Refresh your browser.  You should of course see the new %dev.hello.message.
@@ -203,15 +202,14 @@ Refresh your browser.  You should of course see the new %dev.hello.message.
 Re-run the test, and this time you should pass.  You can also parameterize the ExampleResourceTest.java:
 
 ```java
-package org.j4k.workshops.quarkus;
+package org.acme.resteasy;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-
-import javax.resource.spi.ConfigProperty;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @QuarkusTest
 public class ExampleResourceTest {
@@ -235,7 +233,7 @@ public class ExampleResourceTest {
 You can commit the changes to github if you want:
 
 ```shell script
-git commmit -am "Parameterized ExampleResource message"
+git commit -am "Parameterized ExampleResource message"
 ```
 
 And that's it for part 1!
