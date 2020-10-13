@@ -4,11 +4,34 @@
 
 ## Adding Kafka
 
-Let's swap out our REST call by directly sending the order to a Kafka Topic
+In this step we are going to swap out our REST call by directly sending the order to the "orders" Kafka Topic used by the Quarkus Coffeeshop application.
+
+In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
+
+If you have cloned the "j4k-workshop-solution" project you can check a tag that corresponds to this step with the following command:
+
+```shellscript
+
+git checkout step-02
+
+```
+
+![Checkout Solution Tag](images/03-01.png)
+
+### Kakfa Topics
+
+:sunglasses" *Kafka Topics in an Event Driven Architecture Tip:* Keep related events in the same topic.  We have multiple topics in the application, which is really easy and incurs essentially no performance hit with Kafka.  However, we send all order related events to the the "orders" topic.  This makes it easy to reconstruct our timeline ~~if~~ when we need to debug or replay events in the future.
+
+### SmallRye Reactive Messaging
+
+We mentioned ![SmallRye](https://smallrye.io) in the last section.  The SmallRye project has multiple sub-projects.  ![SmallRye Reactive Messaging](https://smallrye.io/smallrye-reactive-messaging/smallrye-reactive-messaging/2.2/concepts.html) is the one we will be using to interact with Kafka because it makes interacting with Kafka really easy!
+
+In an unrelated side note, Clement Escoffier, @clementplop, another one of the guys whose picture is on the Quarkus Coffeeshop website, is Red Hat's Chief Architect for all things reactive, leads our SmallRye Reactive Messaging implementation, and created the demo upon which this application is based.
+
+## Add Kafka to our application
 
 First we need to add SmallRye Reactive Messaging and 2 dependencies that will help us test Kafka:
 
-## Add Kafka to our application
 
 ### Add the Kafka dependencies to our pom.xml
 
