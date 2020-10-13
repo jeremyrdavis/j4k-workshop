@@ -66,7 +66,9 @@ services:
 Start it with:
 
 ```shell script
-docker-compose j4k-docker-compose.yaml
+
+docker-compose up
+
 ```
 
 ## Persisting our Order with Hibernate Panache
