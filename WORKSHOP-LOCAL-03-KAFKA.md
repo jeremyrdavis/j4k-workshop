@@ -231,7 +231,7 @@ public class KafkaService {
 ```java
 package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
 
-import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrder;
 import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrderHandler;
 import org.slf4j.Logger;
