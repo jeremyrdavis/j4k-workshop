@@ -209,7 +209,7 @@ Create a package for our FavFood domain objects in "org.j4k.workshops.quarkus.co
 Create a class, "FavFoodOrder," in the package:
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 import java.util.List;
 
@@ -228,8 +228,7 @@ public class FavFoodOrder {
 
     }
 
-}
-```
+}```
 
 Use your IDE to generate equals(), hashCode(), toString(), and getters and setters.  In Visual Studio Code you can right-click on the class, choose "Source Action," and you will get a menu with the options.
 
