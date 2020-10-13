@@ -4,6 +4,17 @@
 
 ## MongoDB with Hibernate Panache and Kafka with Microprofile Reactive Messaging
 
+If you have cloned the "j4k-workshop-solution" project you can check a tag that corresponds to this step with the following command:
+
+```shellscript
+
+git checkout step-03
+
+```
+
+![Checkout Solution Tag](images/04-01.png)
+
+
 NOTE: For the next sections you will need Docker and Docker Compose to run Kafka and MongoDB
 
 Create a Docker Compose file named, "docker-compose.yaml" with the following contents (it doesn't have to be in your working directory):
