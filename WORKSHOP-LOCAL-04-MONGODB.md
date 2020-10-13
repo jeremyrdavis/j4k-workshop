@@ -115,7 +115,6 @@ The complete class now looks like:
 package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
-import org.bson.codecs.pojo.annotations.BsonId;
 
 import java.util.List;
 import java.util.Objects;
