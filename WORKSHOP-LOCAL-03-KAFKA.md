@@ -1,4 +1,6 @@
-# 02: Apache Kafka and Reactive Messaging
+**Event Driven Architecture with Quarkus, Kafka, and Kubernetets**  
+
+# Step 3 - Apache Kafka and Reactive Messaging
 
 ## Adding Kafka
 
