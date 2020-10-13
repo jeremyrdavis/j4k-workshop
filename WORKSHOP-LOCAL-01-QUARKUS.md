@@ -35,14 +35,14 @@ In this workshop we will consume their JSON format, translate it into our expect
 
 * Open https://code.quarkus.io
 * In the top left corner set the values for your microservice:
-** org.j4k.workshops.quarkus
-** quarkus-coffeeshop-workshop
-** Maven (Quarkus supports Gradle as well, but this tutorial is built with Maven )
+  * org.j4k.workshops.quarkus
+  * quarkus-coffeeshop-workshop
+  * Maven (Quarkus supports Gradle as well, but this tutorial is built with Maven )
 * From the menu select 
-** RESTEasy JAX-RS
-** RESTEasy JSON-B
-** REST Client JSON-B
-* Click "Generate Your Application" and Push to Github
+  * RESTEasy JAX-RS
+  * RESTEasy JSON-B
+  * REST Client JSON-B
+* Click `"Generate Your Application"` and `Push to Github`
 * Clone the repository on your filesystem
 
 ![code.quarkus.io](images/01-01.png)
@@ -88,13 +88,13 @@ For more on [Quarkus extensions](https://quarkus.io/guides/writing-extensions)
 
 #### Testing Quarkus Applications
 
-* Open src/test/java/org/j4k/workshops/quarkus/ExampleResourceTest  
+* Open `src/test/java/org/j4k/workshops/quarkus/ExampleResourceTest` 
 * There are 2 ways to run tests from within VSCode:  
-** Click "Run Test," which can be found under the @Test annotation and above the "ExampleResourceTest" method  
+  * Click `"Run Test,"` which can be found under the `@Test` annotation and above the `"ExampleResourceTest"` method  
 
 ![Test in Visual Studio Code](images/01-05.png)  
 
-** Open a Terminal and type the following:  
+**Open a Terminal and type the following:**
 
 ```shell
 ./mvnw clean test
@@ -109,7 +109,7 @@ There is a terminal located in Visual Studio Code (see screenshot below.)  Make 
 
 You have probably noticed that the test classes are annotated with "@QuarkusTest."  The test spins up an instance of Quarkus, calls the endpoint using rest-assured, and verifies the output using [Rest-Assured](https://rest-assured.io)  
 
- :sunglasses: *DEV TIP:* [Rest-Assured](https://rest-assured.io)  is a *seriously* useful testing library.  If you haven't spent time with it before carve out some cycles to check it out: [https://rest-assured.io](https://rest-assured.io) 
+ :sunglasses: *DEV TIP:* [Rest-Assured](https://rest-assured.io)  is a *seriously* useful testing library.  We are also using the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers, which is also an incredibly useful project.  If you haven't spent time with it before carve out some cycles to check them out: [https://rest-assured.io](https://rest-assured.io) and [Hamcrest](http://hamcrest.org/JavaHamcrest/)
 
 ### Dev Mode
 

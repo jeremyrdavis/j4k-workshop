@@ -1,4 +1,6 @@
-# Event Driven Architecture with Quarkus, Kafka, and Kubernetets (Local Development)
+**Event Driven Architecture with Quarkus, Kafka, and Kubernetets**  
+
+# Step 2 - Integration with the Microprofile REST Client
 
 In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
 
@@ -13,7 +15,6 @@ In this workshop you will build a microservice to integrate the existing Quarkus
 1. Getting the FavFood Order into Our Format
     1. Our Domain
     1. @RegisterForReflection    
-
 
 
 ## Starting on Our Application
@@ -99,71 +100,58 @@ quarkus.log.category."org.testcontainers".level=FATAL
 
 ### Test First  and Fail Fast
 
-Let's create a new package, "org.j4k.workshops.quarkus.infrastructure."  
+Let's create a new package, "org.j4k.workshops.quarkus.coffeeshop"
 
 :sunglasses: *IDE TIP* In Visual Studio Code you can add all of the folders that make up a package at the same time by including the slashes; "org/j4k/workshops/quarkus/infrastructure" and below:
 
 [VS Code Packages](images/02-01.png)
 
-
-Now add a test, "FavFoodResourceTest" for our REST service:
+Now add a test, "ApiResourceTest" for our REST service:
 
 ```java
-package org.j4k.workshops.quarkus.infrastructure;
+package org.j4k.workshops.quarkus.coffeeshop;
 
-import java.util.UUID;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.ws.rs.core.MediaType;
-
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import javax.ws.rs.core.MediaType;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.equalTo;
 
-@QuarkusTest
-public class FavFoodResourceTest {
+@QuarkusTest 
+public class ApiResourceTest {
+
+    final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
 
     @Test
-    public void testFavFoodEndpoint() {
-
-        final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
-
+    public void tetFavFoodEndpoint(){
 
         given()
-          .accept(MediaType.APPLICATION_JSON)
-          .contentType(MediaType.APPLICATION_JSON)
-          .body(json)
-          .when()
-          .post("/FavFood")
-          .then()
-             .statusCode(202)
-             .body("orderId", equalTo(order.getString("orderId")))
-             .body("customerName", equalTo("Lemmy"));
-    }
+                .when()
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(json)
+                .post("/api/favfood")
+                .then()
+                .statusCode(202);
+
+    };
+
 
 }
-```
-
+```  
 #### Rest Assured Test
 
-[Rest Assured](https://rest-assured.io/) is a great testing tool.  It is included with the RESTEasy extension.  We are also going to use the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshop authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
+[Rest Assured](https://rest-assured.io/) is a great testing tool, which is why Quarkus includes it with the [RESTEasy](https://resteasy.github.io/) extension.  
 
+:nerd_face: *TRIVIA* [RESTEasy](https://resteasy.github.io/) is one of the oldest Java REST frameworks
+
+:sunglasses: *DEV TIP:* We are also using the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshop authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
 
 The Rest-Assured part of our test is:
 
 ```java
-    @Test
-    public void testFavFoodEndpoint() {
-
-        final JsonObject order = mockOrder();
-
         given()
           .accept(MediaType.APPLICATION_JSON)
           .contentType(MediaType.APPLICATION_JSON)
@@ -172,9 +160,8 @@ The Rest-Assured part of our test is:
           .post("/FavFood")
           .then()
              .statusCode(202)
-             .body("orderId", equalTo(order.getString("orderId")))
+             .body("orderId", equalTo("cdc07f8d-698e-43d9-8cd7-095dccace575"))
              .body("customerName", equalTo("Lemmy"));
-    }
 ```
 
 Most of it is similar to our earlier test.  The differences are that we have added header information and a body to the POST request.
@@ -183,13 +170,13 @@ Most of it is similar to our earlier test.  The differences are that we have add
 
 Run the test.  It should of course fail because we haven't implemented our endpoint yet.
 
-*IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshops authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute Lemmy for a customer of your choosing.
+:guitar: *IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshop authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute a musician of your choosing.
 
 [Failed Test](images/02-02.png)
 
 ### Implement Our Endpoint
 
-Create the "infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.infrastructure.ApiResource" with the following content:
+Create the "org.j4k.workshops.quarkus.coffeeshop.infrastructure" package in the "src/java" folder.  Create a Java class, "org.j4k.workshops.quarkus.coffeeshop.infrastructure.ApiResource" with the following content:
 
 ```java
 package org.j4k.workshops.quarkus.infrastructure;
@@ -211,13 +198,13 @@ public class ApiResource {
 }
 ```
 
-Our class won't compile of course because FavFoodOrder doesn't exist.
+Our class won't compile of course because FavFoodOrder doesn't exist.  Your humble workshop authors prefer to code the desired functionality and fill in the blanks with the missing code.  Not everybody enjoys this approach, and you could certainly start by creating the model.  We'll do that in the next step.
 
 ### Create the FavFood domain model
 
 #### FavFoodOrder
 
-Create a package for our FavFood domain objects in "src/main/org/j4k/workshops/quarkus/favfood/domain."
+Create a package for our FavFood domain objects in "org.j4k.workshops.quarkus.coffeeshop.favfood.domain"
 
 Create a class, "FavFoodOrder," in the package:
 
@@ -973,5 +960,10 @@ Update the application.properties to contain:
 %dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 %test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 %prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-```
+```  
 
+If you haven't heard of Microprofile, you can check it out here: https://microprofile.io/
+
+And that's it for part 2!
+
+In [Step 03](WORKSHOP-LOCAL-03-KAFKA.md) you will swap out the REST Client for Kafka: [Onward!](WORKSHOP-LOCAL-03-KAFKA.md)
