@@ -645,11 +645,10 @@ This object is pretty simple.  There are only three things to note:
 * the "addBeverage" and "addKitchenOrder" are convenience methods for adding to the internal List<LineItem> objects
 
 ```java
-package org.j4k.workshops.quarkus.domain;
+package org.j4k.workshops.quarkus.coffeeshop.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
@@ -898,8 +897,8 @@ First let's write a test (this is just testing our business logic so feel free t
 ```java
 package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
-import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodLineItem;
-import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodLineItem;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrder;
 import org.j4k.workshops.quarkus.coffeeshop.domain.LineItem;
 import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 import org.junit.jupiter.api.Test;
