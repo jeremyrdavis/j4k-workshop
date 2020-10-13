@@ -91,8 +91,11 @@ components:
 
 We need to accept an "Order" object with properties, "customerName," "id," and an array "listLineItems" of "LineIem" objects defined.  The "LineItem" contains Strings for "itemId," "item," and an integer "quantity."
 
+### Before We Start Coding
 
-### Setting up Logging
+We should address a couple of things before we start coding:
+
+#### Setting up Logging
 
 Your humble workshop authors hate using System.out.println so we will start by configuring logging.
 
@@ -107,6 +110,31 @@ quarkus.log.category."org.j4k".level=DEBUG
 quarkus.log.category."org.apache.kafka".level=FATAL
 quarkus.log.category."org.testcontainers".level=FATAL
 ```
+
+#### Naming Packages
+
+We are naming our packages like so:
+
+* org/j4k/workshops/quarkus/coffeeshop/domain
+* org/j4k/workshops/quarkus/coffeeshop/infrastructure
+* org/j4k/workshops/quarkus/coffeeshop/favfood/domain
+* org/j4k/workshops/quarkus/coffeeshop/favfood/infrastructure
+
+We are following this convention because it is recommended by Eric Evans in _Domain Driven Design_ which is a fantastic book, and particularly relevant for both microservices architectures and event driven architectures.  Your humble workshop authors cannot recommend it highly enough!
+
+:sunglasses" *Reading List Tip:* Tweet us to let us know you attended the workshop and we might send you a copy.  Our Twitter handles are:
+
+@j4k  
+@argntprgrmr  
+@tech0827  
+@nmcl  
+@kenfinnigan  
+@emmanuelbernard  
+@jtgreene  
+@clementplop 
+@maxandersen   
+
+To be transparent only @argntprgrmr and @tech0827 are responsible for the workshop.  The other guys faces are on the Quarkus Coffeeshop website.  They are responsible for Quarkus
 
 ### Test First  and Fail Fast
 
@@ -851,6 +879,7 @@ public class LineItem {
 	}
 }
 ```
+
 ### Translating the FavFoodOrder into Our Domain with a Transaction Script
 
 #### Test First
