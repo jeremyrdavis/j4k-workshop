@@ -522,6 +522,21 @@ public class FavFoodLineItem {
 
 The test should now pass!
 
+### @RegisterForReflection
+
+Most of this section is the business logic for translating our partner's domain model into our domain model.
+
+The use of @RegisterForReflection, however, is an important Quarkus concept.  Quarkus is designed so that it can be run as a Java application or as a native application.  Creating a native binary from your Java code is accomplished with GraalVM
+
+![GraalVM Reference Manual](https://www.graalvm.org/reference-manual/native-image/)  
+
+![Quarkus Guide for Writing Native Applications](https://quarkus.io/guides/writing-native-applications-tips)  
+
+The following article from Mark Little, Red Hat VP of Engineering and JBoss Middleware CTO, and @nmcl on Twitter, explains why you might want to compile to a native binary:
+
+![Red Hat Developers Article](https://developers.redhat.com/blog/2019/03/29/quarkus-why-compile-to-native/)
+
+
 #### Commit!
 
 You can commit the changes to github if you like:
@@ -531,18 +546,6 @@ git commit -am "completed step 1"
 ```
 
 ## Getting the FavFood Order into our Format
-
-### @RegisterForReflection
-
-Most of this section is the business logic for translating our partner's domain model into our domain model.
-
-The use of @RegisterForReflection, however, is an important Quarkus concept.
-
-(https://www.graalvm.org/reference-manual/native-image/)
-
-(https://quarkus.io/guides/writing-native-applications-tips)
-
-(https://developers.redhat.com/blog/2019/03/29/quarkus-why-compile-to-native/)
 
 ### Our Domain
 
