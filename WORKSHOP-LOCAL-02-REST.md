@@ -99,7 +99,14 @@ quarkus.log.category."org.testcontainers".level=FATAL
 
 ### Test First  and Fail Fast
 
-Let's create a new package, "org.j4k.workshops.quarkus.infrastructure," and a test, "FavFoodResourceTest" for our REST service:
+Let's create a new package, "org.j4k.workshops.quarkus.infrastructure."  
+
+:sunglasses: *IDE TIP* In Visual Studio Code you can add all of the folders that make up a package at the same time by including the slashes; "org/j4k/workshops/quarkus/infrastructure" and below:
+
+[VS Code Packages](images/02-01.png)
+
+
+Now add a test, "FavFoodResourceTest" for our REST service:
 
 ```java
 package org.j4k.workshops.quarkus.infrastructure;
@@ -143,6 +150,7 @@ public class FavFoodResourceTest {
 
 }
 ```
+
 #### Rest Assured Test
 
 [Rest Assured](https://rest-assured.io/) is a great testing tool.  It is included with the RESTEasy extension.  We are also going to use the [Hamcrest](http://hamcrest.org/JavaHamcrest/) matchers.  If you aren't familiar with these projects your humble workshop authors highly recommend you carve out some time to familiarize yourself with them.  Even if you are familiar with them it can be worth your time to revisit the docs; they are both great projects!
@@ -176,6 +184,8 @@ Most of it is similar to our earlier test.  The differences are that we have add
 Run the test.  It should of course fail because we haven't implemented our endpoint yet.
 
 *IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshops authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute Lemmy for a customer of your choosing.
+
+[Failed Test](images/02-02.png)
 
 ### Implement Our Endpoint
 
