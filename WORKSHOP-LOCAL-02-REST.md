@@ -4,6 +4,18 @@
 
 In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
 
+If you have cloned the "j4k-workshop-solution" project you can check a tag that corresponds to this step with the following command:
+
+```shellscript
+
+git checkout step-01
+
+```
+
+And, yes, we are aware that the tag is "step-01" even though you are on Step 2.
+
+![Checkout Solution Tag](images/02-03.png)
+
 ## Table of Contents
 
 1. Starting on Our Application
@@ -81,8 +93,11 @@ components:
 
 We need to accept an "Order" object with properties, "customerName," "id," and an array "listLineItems" of "LineIem" objects defined.  The "LineItem" contains Strings for "itemId," "item," and an integer "quantity."
 
+### Before We Start Coding
 
-### Setting up Logging
+We should address a couple of things before we start coding:
+
+#### Setting up Logging
 
 Your humble workshop authors hate using System.out.println so we will start by configuring logging.
 
@@ -98,30 +113,61 @@ quarkus.log.category."org.apache.kafka".level=FATAL
 quarkus.log.category."org.testcontainers".level=FATAL
 ```
 
+#### Naming Packages
+
+We are naming our packages like so:
+
+* org/j4k/workshops/quarkus/coffeeshop/domain
+* org/j4k/workshops/quarkus/coffeeshop/infrastructure
+* org/j4k/workshops/quarkus/coffeeshop/favfood/domain
+* org/j4k/workshops/quarkus/coffeeshop/favfood/infrastructure
+
+We are following this convention because it is recommended by Eric Evans in _Domain Driven Design_ which is a fantastic book, and particularly relevant for both microservices architectures and event driven architectures.  Your humble workshop authors cannot recommend it highly enough!
+
+The idea behind this structure is to segment class files based on application responsibility rather than technichal function.  So we avoid packages like, "org/j4k/workshops/quarkus/coffeeshops/rest" or "org/j4k/workshops/quarkus/coffeeshops/persistence."
+
+:sunglasses: *Reading List Tip:* Tweet us to let us know you attended the workshop and we might send you a copy of _Domain Driven Design_.  Our Twitter handles are:
+
+@argntprgrmr  
+@tech0827  
+
+And include @j4k and @quarkusio
+
+While we are on the topic of Twitter handles the guys who are on the Quarkus Coffeeshop website are:
+@clementplop 
+@emmanuelbernard  
+@jtgreene  
+@kenfinnigan  
+@maxandersen   
+@nmcl  
+
+They are responsible for Quarkus.  @argntprgrmr and @tech0827 are responsible for the workshop.  
+
 ### Test First  and Fail Fast
 
-Let's create a new package, "org.j4k.workshops.quarkus.coffeeshop," and a test, "ApiResourceTest" for our REST service:
+Let's create a new package, "org.j4k.workshops.quarkus.coffeeshop"
+
+:sunglasses: *IDE TIP* In Visual Studio Code you can add all of the folders that make up a package at the same time by including the slashes; "org/j4k/workshops/quarkus/infrastructure" and below:
+
+![VS Code Packages](/images/02-01.png)
+
+Now add a test, "ApiResourceTest" for our REST service:
 
 ```java
 package org.j4k.workshops.quarkus.coffeeshop;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
-import org.j4k.workshops.quarkus.coffeeshop.favfood.infrastructure.FavFoodOrderRepository;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.MediaType;
 
 import static io.restassured.RestAssured.given;
 
-@QuarkusTest @QuarkusTestResource(KafkaTestResource.class)
+@QuarkusTest 
 public class ApiResourceTest {
 
     final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
-
-    @InjectMock
-    FavFoodOrderRepository repository;
 
     @Test
     public void tetFavFoodEndpoint(){
@@ -140,7 +186,6 @@ public class ApiResourceTest {
 
 }
 ```  
-
 #### Rest Assured Test
 
 [Rest Assured](https://rest-assured.io/) is a great testing tool, which is why Quarkus includes it with the [RESTEasy](https://resteasy.github.io/) extension.  
@@ -171,6 +216,8 @@ Most of it is similar to our earlier test.  The differences are that we have add
 Run the test.  It should of course fail because we haven't implemented our endpoint yet.
 
 :guitar: *IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshop authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute a musician of your choosing.
+
+![Failed Test](images/02-02.png)
 
 ### Implement Our Endpoint
 
@@ -207,7 +254,7 @@ Create a package for our FavFood domain objects in "org.j4k.workshops.quarkus.co
 Create a class, "FavFoodOrder," in the package:
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 import java.util.List;
 
@@ -225,16 +272,17 @@ public class FavFoodOrder {
     public FavFoodOrder(){
 
     }
-
 }
-```
+```  
 
-Use your IDE to generate equals(), hashCode(), toString(), and getters and setters.  In Visual Studio Code you can right-click on the class, choose "Source Action," and you will get a menu with the options.
+Create or use your IDE to generate equals(), hashCode(), toString(), and getters and setters.  
+
+:sunglasses: *IDE Tip:* In Visual Studio Code you can right-click on the class, choose "Source Action," and you will get a menu with the options.
 
 The whole class is below for reference:
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 import java.util.List;
 
@@ -365,15 +413,15 @@ public class FavFoodOrder {
 }
 ```
 
-Your IDE should be complaining at this point because we don't have a "LineItem" class yet.  Let's fix that!
+Your IDE should be complaining at this point because we don't have a "FavFoodLineItem" class yet.  Let's fix that!
 
 #### LineItem
 
-Just like the FavFoodOrder create a class, "LineItem," in the "domain package":
+Just like the FavFoodOrder create a class, "FavFoodLineItem," in the "domain package":
 
 ```java
 
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
@@ -396,7 +444,7 @@ public class FavFoodLineItem {
 Repeat the code generation steps above for getters and settes, hashCode(), equals(), and toString() so that you have a class like:
 
 ```java
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 public class FavFoodLineItem {
 
@@ -406,7 +454,7 @@ public class FavFoodLineItem {
 
     int quantity;
 
-    public LineItem(){
+    public FavFoodLineItem(){
 
     }
 
@@ -509,6 +557,19 @@ public class FavFoodLineItem {
 
 The test should now pass!
 
+### @RegisterForReflection
+
+Most of this section is the business logic for translating our partner's domain model into our domain model.
+
+The use of @RegisterForReflection, however, is an important Quarkus concept.  Quarkus is designed so that it can be run as a Java application or as a native application.  Creating a native binary from your Java code is accomplished with GraalVM
+
+![GraalVM Reference Manual](https://www.graalvm.org/reference-manual/native-image/)  
+
+![Quarkus Guide for Writing Native Applications](https://quarkus.io/guides/writing-native-applications-tips)  
+
+The following article from Mark Little, Red Hat VP of Engineering and JBoss Middleware CTO, and @nmcl on Twitter, explains why you might want to compile to a native binary: ![Red Hat Developers Article](https://developers.redhat.com/blog/2019/03/29/quarkus-why-compile-to-native/)
+
+
 #### Commit!
 
 You can commit the changes to github if you like:
@@ -518,18 +579,6 @@ git commit -am "completed step 1"
 ```
 
 ## Getting the FavFood Order into our Format
-
-### @RegisterForReflection
-
-Most of this section is the business logic for translating our partner's domain model into our domain model.
-
-The use of @RegisterForReflection, however, is an important Quarkus concept.
-
-(https://www.graalvm.org/reference-manual/native-image/)
-
-(https://quarkus.io/guides/writing-native-applications-tips)
-
-(https://developers.redhat.com/blog/2019/03/29/quarkus-why-compile-to-native/)
 
 ### Our Domain
 
@@ -600,11 +649,10 @@ This object is pretty simple.  There are only three things to note:
 * the "addBeverage" and "addKitchenOrder" are convenience methods for adding to the internal List<LineItem> objects
 
 ```java
-package org.j4k.workshops.quarkus.domain;
+package org.j4k.workshops.quarkus.coffeeshop.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
@@ -734,7 +782,7 @@ public class OrderInCommand {
 #### LineItem
 
 ```java
-package org.j4k.workshops.quarkus.domain;
+package org.j4k.workshops.quarkus.coffeeshop.domain;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
@@ -837,7 +885,14 @@ public class LineItem {
 	}
 }
 ```
+
 ### Translating the FavFoodOrder into Our Domain with a Transaction Script
+
+#### Transaction Script
+
+If you are unfamiliar with the term "Transaction Script" check out this brief definition from Martin Fowler: ![Martin Fowler's Transaction Script Definition](https://martinfowler.com/eaaCatalog/transactionScript.html)
+
+Eric Evans elaborates on the difference between good Object Oriented Design and Transaction Scripts in _Domain Driven Design_.  We don't need much from our FavFood domain (or any of the future delivery services we might partner with) so we are opting for a simple Transaction Script.
 
 #### Test First
 
@@ -846,8 +901,8 @@ First let's write a test (this is just testing our business logic so feel free t
 ```java
 package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
-import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodLineItem;
-import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodLineItem;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrder;
 import org.j4k.workshops.quarkus.coffeeshop.domain.LineItem;
 import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 import org.junit.jupiter.api.Test;
@@ -870,7 +925,7 @@ public class FavFoodOrderHandlerTest {
         favFoodOrder.setFavFoodLineItems(
                 new ArrayList<>(
                     Arrays.asList(
-                            new FavFoodLineItem("COFFEE_BLACK", UUID.randomUUID().toString(), 1)
+                            new FavFoodLineItem(UUID.randomUUID().toString(), "COFFEE_BLACK",  1)
                     )));
 
         OrderInCommand expectedOrderInCommand = FavFoodOrderHandler.handleOrder(favFoodOrder);
@@ -891,7 +946,6 @@ In this case we will use an anemic domain model and handle the translation with 
 ```java
 package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
-import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
 import org.j4k.workshops.quarkus.coffeeshop.domain.LineItem;
 import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 
@@ -923,27 +977,27 @@ public class FavFoodOrderHandler {
     }
 }
 ```
-## Getting the FavFoodOrder into our System
+## Getting the FavFoodOrder into the Coffeeshop System
 
 We are going to use Quarkus' Microprofile REST Client to call an existing endpoint in the web application.  This is easy to do.  We simply need to create an interface pointing at the REST endpoint and update our application.properties file with the appropriate URI:
 
 ```java
-package org.j4k.workshops.quarkus.infrastructure;
-
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.j4k.workshops.quarkus.domain.OrderInCommand;
+package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import java.util.concurrent.CompletionStage;
 
-@Path("/order")
-@RegisterRestClient
-public interface RESTService {
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrder;
+
+@Path("/api")
+public class ApiResource {
 
     @POST
-    CompletionStage<Response> placeOrders(OrderInCommand createOrderCommand);
+	@Path("/favfood")
+    public Response placeOrder(final FavFoodOrder favFoodOrder){
+        return Response.accepted().entity(favFoodOrder).build();
+    }
 }
 ```
 
@@ -951,17 +1005,22 @@ Update the application.properties to contain:
 
 ```properties
 # REST CLIENT
-%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
-%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
-%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%dev.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%test.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
+%prod.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/url=<<WORKSHOP_URL>>
 
-%dev.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-%test.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
-%prod.org.j4k.workshops.quarkus.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%dev.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%test.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
+%prod.org.j4k.workshops.quarkus.coffeehop.infrastructure.RESTService/mp-rest/scope=javax.inject.Singleton
 ```  
+
+And that's it for part 2!
+
+## Microprofile 
 
 If you haven't heard of Microprofile, you can check it out here: https://microprofile.io/
 
-And that's it for part 2!
+![SmallRye](https://smallrye.io/) is Red Hat's implementation of the Microprofile spec.  Ken Finnigan, @kenfinnigan, leads SmallRye, and used to lead WildFly-Swarm and Thorntail (which were pre-cursors to Quarkus.)  SmallRye is also the parent project for Red Hat's implementation of Microprofile Reactive Messaging, which is up next.
+
 
 In [Step 03](WORKSHOP-LOCAL-03-KAFKA.md) you will swap out the REST Client for Kafka: [Onward!](WORKSHOP-LOCAL-03-KAFKA.md)

@@ -1,10 +1,25 @@
-# 03: Persistence with Hibernate Panache and MogoDB
+**Event Driven Architecture with Quarkus, Kafka, and Kubernetets**  
+
+# Step 4 - Persistence with Hibernate Panache and MogoDB
 
 ## MongoDB with Hibernate Panache and Kafka with Microprofile Reactive Messaging
 
+If you have cloned the "j4k-workshop-solution" project you can check a tag that corresponds to this step with the following command:
+
+```shellscript
+
+git checkout step-03
+
+```
+
+Yes, the tag is "step-03," and this is Step 4.
+
+![Checkout Solution Tag](images/04-01.png)
+
+
 NOTE: For the next sections you will need Docker and Docker Compose to run Kafka and MongoDB
 
-Create a Docker Compose file named, "j4k-docker-compose.yaml" with the following contents (it doesn't have to be in your working directory):
+Create a Docker Compose file named, "docker-compose.yaml" with the following contents (it doesn't have to be in your working directory):
 
 ```yaml
 version: '3'
@@ -50,21 +65,36 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 ```
 
+And a file to initialize MongoDB correctly called "init-mongo.js" with the following contents:
+
+```javascript
+db.createUser({
+        user:"coffeeshop-user",
+        pwd:"redhat-20",
+        roles:[
+            {
+                role:"readWrite",
+                db:"coffeeshopdb"
+            }
+        ]
+    }
+)
+
+```
+
 Start it with:
 
 ```shell script
-docker-compose j4k-docker-compose.yaml
+
+docker-compose up
+
 ```
 
 ## Persisting our Order with Hibernate Panache
 
 [Hibernate Panache](https://quarkus.io/guides/hibernate-orm-panache)
 
-We can add the necessary extensions 2 ways:
-* the Quarkus Maven Plugin
-* by updating the pom.xml directly
-
-For this example let's update the pom. We need the Hibernate Panache and Quarkus JUnit5 Mockito extensions.  Adding them with the Maven plugin:
+First we will add the necessary extensions to our pom. We need the Hibernate Panache and Quarkus JUnit5 Mockito extensions:
 
 ```xml
     <dependency>
@@ -102,7 +132,6 @@ The complete class now looks like:
 package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
-import org.bson.codecs.pojo.annotations.BsonId;
 
 import java.util.List;
 import java.util.Objects;
@@ -238,3 +267,57 @@ public class ApiResource {
     }
 }
 ```
+
+### Mocking the Repository
+
+To properly test the ApiResource we need to mock the Repository class.  QuarksTest makes it easy to mock out injected objects.  Just add the following:
+
+```java
+
+    @InjectMock
+    FavFoodOrderRepository repository;
+
+```
+
+The complete class:
+
+```java
+package org.j4k.workshops.quarkus.coffeeshop;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.infrastructure.FavFoodOrderRepository;
+import org.junit.jupiter.api.Test;
+
+import javax.ws.rs.core.MediaType;
+
+import static io.restassured.RestAssured.given;
+
+@QuarkusTest @QuarkusTestResource(KafkaTestResource.class)
+public class ApiResourceTest {
+
+    final String json = "{\"customerName\":\"Lemmy\",\"orderId\":\"cdc07f8d-698e-43d9-8cd7-095dccace575\",\"favFoodLineItems\":[{\"item\":\"COFFEE_BLACK\",\"itemId\":\"0eb0f0e6-d071-464e-8624-23195c8f9e37\",\"quantity\":1}]}";
+
+    @InjectMock
+    FavFoodOrderRepository repository;
+
+    @Test
+    public void tetFavFoodEndpoint(){
+
+        given()
+                .when()
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(json)
+                .post("/api/favfood")
+                .then()
+                .statusCode(202);
+
+    };
+
+
+}
+```
+
+Now the test should pass.

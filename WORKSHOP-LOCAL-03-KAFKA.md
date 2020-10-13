@@ -1,12 +1,46 @@
-# 02: Apache Kafka and Reactive Messaging
+**Event Driven Architecture with Quarkus, Kafka, and Kubernetets**  
+
+# Step 3 - Apache Kafka and Reactive Messaging
 
 ## Adding Kafka
 
-Let's swap out our REST call by directly sending the order to a Kafka Topic
+In this step we are going to swap out our REST call by directly sending the order to the "orders" Kafka Topic used by the Quarkus Coffeeshop application.
+
+In this workshop you will build a microservice to integrate the existing Quarkus Coffeeshop application with the FavFood Delivery Service
+
+If you have cloned the "j4k-workshop-solution" project you can check a tag that corresponds to this step with the following command:
+
+```shellscript
+
+git checkout step-02
+
+```
+You may not have "step-02" on your machine.  If you don't run the following to check out all of the tags:
+
+```shellscript
+
+git fetch --all --tags
+
+```
+
+Then checkout step-02.
+
+![Checkout Solution Tag](images/03-01.png)
+
+### Kakfa Topics
+
+:sunglasses: *Kafka Topics in an Event Driven Architecture Tip:* Keep related events in the same topic.  We have multiple topics in the application, which is really easy and incurs essentially no performance hit with Kafka.  However, we send all order related events to the the "orders" topic.  This makes it easy to reconstruct our timeline ~~if~~ when we need to debug or replay events in the future.
+
+### SmallRye Reactive Messaging
+
+We mentioned ![SmallRye](https://smallrye.io) in the last section.  The SmallRye project has multiple sub-projects.  ![SmallRye Reactive Messaging](https://smallrye.io/smallrye-reactive-messaging/smallrye-reactive-messaging/2.2/concepts.html) is the one we will be using to interact with Kafka because it makes interacting with Kafka really easy!
+
+In an unrelated side note, Clement Escoffier, @clementplop, another one of the guys whose picture is on the Quarkus Coffeeshop website, is Red Hat's Chief Architect for all things reactive, leads our SmallRye Reactive Messaging implementation, and created the demo upon which this application is based.
+
+## Add Kafka to our application
 
 First we need to add SmallRye Reactive Messaging and 2 dependencies that will help us test Kafka:
 
-## Add Kafka to our application
 
 ### Add the Kafka dependencies to our pom.xml
 
@@ -41,11 +75,38 @@ application.properties:
 %test.mp.messaging.outgoing.orders.topic=orders
 ```
 
+Also, be sure to get rid of the REST Client configuration in your application.properties file.  The updated file should look like:
+
+```properties
+# Logging
+#quarkus.log.console.format=%d{HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n
+quarkus.log.console.format=%-5p [%c{2.}] (%t) %s%e%n
+quarkus.log.level=INFO
+quarkus.log.category."org.j4k".level=DEBUG
+quarkus.log.category."org.apache.kafka".level=FATAL
+quarkus.log.category."org.testcontainers".level=FATAL
+
+# Kafka
+%dev.mp.messaging.outgoing.orders.connector=smallrye-kafka
+%dev.mp.messaging.outgoing.orders.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+%dev.mp.messaging.outgoing.orders.topic=orders
+
+%test.mp.messaging.outgoing.orders.connector=smallrye-kafka
+%test.mp.messaging.outgoing.orders.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+%test.mp.messaging.outgoing.orders.topic=orders
+```
+
 ## Testing with the QuarkusTestResourceLifecycleManager
 
-Create a class QuarkusTestResource class to start Kafka before our JUnit test runs:
+We've already covered the @QuarkusTest annotation, but just to recap: QuarkusTest spins up an instance of Quarkus (politely using port 8081 for the web.)
+
+QuarkusTestResourceLifecycleManager is a commonly used helper class that spins up external dependencies (like Kafka) for use in integration tests.
+
+We are going to create a class that implements QuarkusTestResourceLifecycleManager to spin up Kafka.  Create a class KafkaTestResource in the "org/j4k/workshops/quarkus/coffeeshop/infrastructure" package:
 
 ```java
+package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
+
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.testcontainers.containers.KafkaContainer;
 
@@ -170,7 +231,7 @@ public class KafkaService {
 ```java
 package org.j4k.workshops.quarkus.coffeeshop.infrastructure;
 
-import org.j4k.workshops.quarkus.coffeeshop.domain.FavFoodOrder;
+import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrder;
 import org.j4k.workshops.quarkus.coffeeshop.domain.OrderInCommand;
 import org.j4k.workshops.quarkus.coffeeshop.favfood.domain.FavFoodOrderHandler;
 import org.slf4j.Logger;
@@ -204,3 +265,10 @@ public class ApiResource {
     }
 }
 ```
+
+Re-run the ApiResourceTest to verify that we still get the expected result.
+
+
+In [Step 04](WORKSHOP-LOCAL-04-MONGODB.md) you will persist the incoming FavFood orders in MongoDB: [Onward!](WORKSHOP-LOCAL-04-MONGODB.md)
+
+
