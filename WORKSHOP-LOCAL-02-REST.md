@@ -885,6 +885,12 @@ public class LineItem {
 
 ### Translating the FavFoodOrder into Our Domain with a Transaction Script
 
+#### Transaction Script
+
+If you are unfamiliar with the term "Transaction Script" check out this brief definition from Martin Fowler: ![Martin Fowler's Transaction Script Definition](https://martinfowler.com/eaaCatalog/transactionScript.html)
+
+Eric Evans elaborates on the difference between good Object Oriented Design and Transaction Scripts in _Domain Driven Design_.  We don't need much from our FavFood domain (or any of the future delivery services we might partner with) so we are opting for a simple Transaction Script.
+
 #### Test First
 
 First let's write a test (this is just testing our business logic so feel free to copy and paste.)  The interesting stuff is next.
