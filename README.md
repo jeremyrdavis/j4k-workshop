@@ -1,6 +1,13 @@
 # Event Driven Architecture with Quarkus, Kafka, and Kubernetets
 
-*Don't hesitate to ask questions!*
+*Don't hesitate to ask questions!*. 
+
+*NOTE* We are currently experiencing issues with our OpenShift (Kubernetes) environment.  We are working to spin up and provision a new cluster, but we will not have complete access at 10am. 
+
+The workshop is designed to run locally so you can work through steps the on your laptop. Interacting with the rest of the microservices may not be possible though.   
+
+Please check the chat room for updates!
+
 
 ## Table of Contents
 
