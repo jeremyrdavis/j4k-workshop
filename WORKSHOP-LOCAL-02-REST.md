@@ -104,7 +104,7 @@ Let's create a new package, "org.j4k.workshops.quarkus.coffeeshop"
 
 :sunglasses: *IDE TIP* In Visual Studio Code you can add all of the folders that make up a package at the same time by including the slashes; "org/j4k/workshops/quarkus/infrastructure" and below:
 
-[VS Code Packages](images/02-01.png)
+![VS Code Packages](/images/02-01.png)
 
 Now add a test, "ApiResourceTest" for our REST service:
 
@@ -172,7 +172,7 @@ Run the test.  It should of course fail because we haven't implemented our endpo
 
 :guitar: *IRRELEVENT NOTE:* Black Coffee seems an appropriate beverage for Lemmy Kilminster who was the bassist, singer, and leader of Mötorhead until his death in 2015.  Your humble workshop authors chose Lemmy as our customer because Mötorhead is excellent background music for creating workshops.  Feel free to substitute a musician of your choosing.
 
-[Failed Test](images/02-02.png)
+![Failed Test](images/02-02.png)
 
 ### Implement Our Endpoint
 
