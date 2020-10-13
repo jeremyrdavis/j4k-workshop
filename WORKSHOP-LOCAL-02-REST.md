@@ -240,7 +240,9 @@ public class FavFoodOrder {
 }
 ```  
 
-Use your IDE to generate equals(), hashCode(), toString(), and getters and setters.  In Visual Studio Code you can right-click on the class, choose "Source Action," and you will get a menu with the options.
+Create or use your IDE to generate equals(), hashCode(), toString(), and getters and setters.  
+
+:sunglasses: *IDE Tip:* In Visual Studio Code you can right-click on the class, choose "Source Action," and you will get a menu with the options.
 
 The whole class is below for reference:
 
@@ -376,15 +378,15 @@ public class FavFoodOrder {
 }
 ```
 
-Your IDE should be complaining at this point because we don't have a "LineItem" class yet.  Let's fix that!
+Your IDE should be complaining at this point because we don't have a "FavFoodLineItem" class yet.  Let's fix that!
 
 #### LineItem
 
-Just like the FavFoodOrder create a class, "LineItem," in the "domain package":
+Just like the FavFoodOrder create a class, "FavFoodLineItem," in the "domain package":
 
 ```java
 
-package org.j4k.workshops.quarkus.favfood.domain;
+package org.j4k.workshops.quarkus.coffeeshop.favfood.domain;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
