@@ -12,6 +12,8 @@ git checkout step-01
 
 ```
 
+And, yes, we are aware that the tag is "step-01" even though you are on Step 2.
+
 ![Checkout Solution Tag](images/02-03.png)
 
 ## Table of Contents
