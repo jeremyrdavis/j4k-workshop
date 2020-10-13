@@ -265,3 +265,10 @@ public class ApiResource {
     }
 }
 ```
+
+Re-run the ApiResourceTest to verify that we still get the expected result.
+
+
+In [Step 04](WORKSHOP-LOCAL-04-MONGODB.md) you will persist the incoming FavFood orders in MongoDB: [Onward!](WORKSHOP-LOCAL-04-MONGODB.md)
+
+
