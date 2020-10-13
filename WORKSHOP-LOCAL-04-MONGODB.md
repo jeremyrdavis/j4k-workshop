@@ -75,11 +75,7 @@ docker-compose up
 
 [Hibernate Panache](https://quarkus.io/guides/hibernate-orm-panache)
 
-We can add the necessary extensions 2 ways:
-* the Quarkus Maven Plugin
-* by updating the pom.xml directly
-
-For this example let's update the pom. We need the Hibernate Panache and Quarkus JUnit5 Mockito extensions.  Adding them with the Maven plugin:
+First we will add the necessary extensions to our pom. We need the Hibernate Panache and Quarkus JUnit5 Mockito extensions:
 
 ```xml
     <dependency>
